@@ -1,0 +1,188 @@
+Your current code is already doing the best practical thing for ETA:
+
+Last 14 days history
+
+Successful runs only
+
+Ignore abnormal runs < 30 minutes
+
+Median instead of mean
+
+Remaining runtime for currently running DAG
+
+
+There is no magic code change that will suddenly make the ETA accurate.
+
+The biggest improvement you can make is:
+
+Change 1: Increase lookback window
+
+Replace:
+
+LOOKBACK_DAYS = 14
+
+with:
+
+LOOKBACK_DAYS = 30
+
+This gives more historical data and stabilizes the median.
+
+
+---
+
+Change 2: Show hours in CSV
+
+Add below LOOKBACK_DAYS:
+
+def minutes_to_hours(minutes):
+
+    if minutes is None:
+        return ""
+
+    return round(minutes / 60, 2)
+
+
+---
+
+Replace:
+
+writer.writerow([
+    "dag_id",
+    "avg_runtime_minutes",
+    "elapsed_minutes",
+    "remaining_minutes"
+])
+
+with:
+
+writer.writerow([
+    "dag_id",
+    "avg_runtime_hours",
+    "elapsed_hours",
+    "remaining_hours"
+])
+
+
+---
+
+Replace:
+
+writer.writerow([
+    dag_id,
+    avg_runtime,
+    elapsed_minutes,
+    remaining_runtime
+])
+
+with:
+
+writer.writerow([
+    dag_id,
+    minutes_to_hours(avg_runtime),
+    minutes_to_hours(elapsed_minutes),
+    minutes_to_hours(remaining_runtime)
+])
+
+
+---
+
+Replace:
+
+writer.writerow([
+    dag_id,
+    avg_runtime,
+    "",
+    avg_runtime
+])
+
+with:
+
+writer.writerow([
+    dag_id,
+    minutes_to_hours(avg_runtime),
+    "",
+    minutes_to_hours(avg_runtime)
+])
+
+
+---
+
+Change 3: Add Total Hours
+
+Replace:
+
+writer.writerow([
+    "Total Remaining Minutes",
+    round(total_remaining_minutes, 2)
+])
+
+with:
+
+writer.writerow([
+    "Total Remaining Minutes",
+    round(total_remaining_minutes, 2)
+])
+
+writer.writerow([
+    "Total Remaining Hours",
+    round(total_remaining_minutes / 60, 2)
+])
+
+
+---
+
+Change 4: Add Confidence Indicator
+
+After:
+
+estimated_completion_time = (
+    current_time +
+    timedelta(minutes=total_remaining_minutes)
+)
+
+add:
+
+confidence = "MEDIUM"
+
+if total_remaining_minutes < 1440:
+    confidence = "HIGH"
+elif total_remaining_minutes > 4320:
+    confidence = "LOW"
+
+And in summary add:
+
+writer.writerow([
+    "Prediction Confidence",
+    confidence
+])
+
+
+---
+
+What manager actually wants now
+
+Your manager's latest feedback is not asking for a new ETA formula.
+
+He wants:
+
+> "How close is the ETA to the actual completion time?"
+
+
+
+So the next DAG should be:
+
+dre_dag_eta_accuracy_report
+
+which compares:
+
+Predicted Completion Time
+vs
+Actual FPCF Completion Time
+
+for the last 7–14 runs and reports:
+
+Average Error Hours
+Median Error Hours
+Max Error Hours
+
+That accuracy report will improve confidence in the ETA much more than tweaking the current calculator.
