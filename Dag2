@@ -1,172 +1,307 @@
-from datetime import datetime, timedelta
-import csv
-import io
-import statistics
+Abhi jo code tumne paste kiya hai usme half old DAG code hai aur half new task-based code hai. Aise run kiya to DAG fail hoga.
 
-import boto3
+1. Add these 2 functions above upload_to_s3()
 
-from airflow import DAG
-from airflow.operators.python import PythonOperator
-from airflow.models import TaskInstance
-from airflow.utils.state import State
-from airflow.utils.session import create_session
-from airflow.utils import timezone
+ADD Function
 
+def get_task_runtime_hours(dag_id, task_id):
 
-LOOKBACK_DAYS = 7
+    durations = []
 
-S3_BUCKET = "dre-rms-mwaa-rms-stg"
-S3_KEY_PREFIX = "dags2/reports"
+    lookback_date = timezone.utcnow() - timedelta(days=LOOKBACK_DAYS)
 
+    with create_session() as session:
 
-
-
-def upload_to_s3(csv_content):
-
-    s3 = boto3.client("s3")
-
-    file_name = (
-        f"dag_eta_"
-        f"{timezone.utcnow().strftime('%Y%m%d_%H%M%S')}.csv"
-    )
-
-    s3_key = f"{S3_KEY_PREFIX}/{file_name}"
-
-    s3.put_object(
-        Bucket=S3_BUCKET,
-        Key=s3_key,
-        Body=csv_content,
-        ContentType="text/csv"
-    )
-
-    print(f"CSV uploaded to s3://{S3_BUCKET}/{s3_key}")
-
-
-def calculate_eta(**context):
-
-    dag_run = context.get("dag_run")
-
-    if not dag_run:
-        raise ValueError("dag_run not found")
-
-    task_sequence = dag_run.conf.get("task_sequence")
-
-    if not task_sequence:
-        raise ValueError(
-            "dag_sequence is mandatory in dag_run.conf"
+        task_instances = (
+            session.query(TaskInstance)
+            .filter(
+                TaskInstance.dag_id == dag_id,
+                TaskInstance.task_id == task_id,
+                TaskInstance.state == State.SUCCESS,
+                TaskInstance.start_date >= lookback_date
+            )
+            .all()
         )
 
-    current_running_dag = task_sequence[0]
-    target_dag = task_sequence[-1]
+        for ti in task_instances:
 
-    print(f"DAG Sequence : {task_sequence}")
-    print(f"Current DAG : {current_running_dag}")
-    print(f"Target DAG : {target_dag}")
+            if ti.duration and ti.duration > 60:
 
-    csv_buffer = io.StringIO()
-    writer = csv.writer(csv_buffer)
+                runtime_hours = ti.duration / 3600
 
-    writer.writerow([
-        "dag_id",
-        "task_id",
-        "avg_runtime_minutes",
-        "elapsed_minutes",
-        "remaining_minutes"
-    ])
+                durations.append(runtime_hours)
 
-    total_remaining_minutes = 0
+        if not durations:
+            return None
 
-    for dag_id in dag_sequence:
+        return round(statistics.median(durations), 2)
 
-        avg_runtime = get_avg_runtime_minutes(dag_id)
 
-        if avg_runtime is None:
+---
 
-            writer.writerow([
-                dag_id,
-                "NO_HISTORY",
-                "",
-                ""
-            ])
+ADD Function
 
-            continue
+def get_remaining_task_hours(
+    dag_id,
+    task_id,
+    avg_hours
+):
 
-        if dag_id == current_running_dag:
+    with create_session() as session:
 
-            remaining_runtime, elapsed_minutes = (
-                get_remaining_runtime_minutes(
-                    dag_id,
-                    avg_runtime
-                )
+        running_task = (
+            session.query(TaskInstance)
+            .filter(
+                TaskInstance.dag_id == dag_id,
+                TaskInstance.task_id == task_id,
+                TaskInstance.state == State.RUNNING
             )
+            .order_by(
+                TaskInstance.start_date.desc()
+            )
+            .first()
+        )
 
-            total_remaining_minutes += remaining_runtime
+        if not running_task:
+            return avg_hours, 0
 
-            writer.writerow([
-                dag_id,
-                avg_runtime,
-                elapsed_minutes,
-                remaining_runtime
-            ])
+        elapsed_hours = (
+            timezone.utcnow()
+            - running_task.start_date
+        ).total_seconds() / 3600
 
-        else:
+        remaining_hours = max(
+            avg_hours - elapsed_hours,
+            0
+        )
 
-            total_remaining_minutes += avg_runtime
+        return (
+            round(remaining_hours, 2),
+            round(elapsed_hours, 2)
+        )
 
-            writer.writerow([
-                dag_id,
-                avg_runtime,
-                "",
-                avg_runtime
-            ])
 
-    current_time = timezone.utcnow()
+---
 
-    estimated_completion_time = (
-        current_time +
-        timedelta(minutes=total_remaining_minutes)
+2. Inside calculate_eta()
+
+Replace
+
+current_running_dag = task_sequence[0]
+target_dag = task_sequence[-1]
+
+with
+
+current_task = task_sequence[0]
+target_task = task_sequence[-1]
+
+
+---
+
+Replace
+
+print(f"Current DAG : {current_running_dag}")
+print(f"Target DAG : {target_dag}")
+
+with
+
+print(f"Current Task : {current_task}")
+print(f"Target Task : {target_task}")
+
+
+---
+
+Replace
+
+writer.writerow([
+    "dag_id",
+    "task_id",
+    "avg_runtime_minutes",
+    "elapsed_minutes",
+    "remaining_minutes"
+])
+
+with
+
+writer.writerow([
+    "dag_id",
+    "task_id",
+    "avg_runtime_hours",
+    "elapsed_hours",
+    "remaining_hours"
+])
+
+
+---
+
+Replace
+
+total_remaining_minutes = 0
+
+with
+
+total_remaining_hours = 0
+
+
+---
+
+3. DELETE Entire Old Loop
+
+Delete everything from:
+
+for dag_id in dag_sequence:
+
+till its ending.
+
+Because:
+
+dag_sequence
+get_avg_runtime_minutes()
+get_remaining_runtime_minutes()
+
+all belong to old DAG-runtime logic.
+
+
+---
+
+4. ADD New Loop
+
+Put this instead:
+
+for index, item in enumerate(task_sequence):
+
+    dag_id = item["dag_id"]
+    task_id = item["task_id"]
+
+    avg_hours = get_task_runtime_hours(
+        dag_id,
+        task_id
     )
 
-    writer.writerow([])
-    writer.writerow(["SUMMARY"])
+    if avg_hours is None:
 
-    writer.writerow([
-        "Current Running DAG",
-        current_running_dag
-    ])
+        writer.writerow([
+            dag_id,
+            task_id,
+            "NO_HISTORY",
+            "",
+            ""
+        ])
 
-    writer.writerow([
-        "Target DAG",
-        target_dag
-    ])
+        continue
 
-    writer.writerow([
-        "Total Remaining Minutes",
-        round(total_remaining_minutes, 2)
-    ])
+    if index == 0:
 
-    writer.writerow([
-        "Current UTC Time",
-        current_time.strftime("%Y-%m-%d %H:%M:%S")
-    ])
+        remaining_hours, elapsed_hours = (
+            get_remaining_task_hours(
+                dag_id,
+                task_id,
+                avg_hours
+            )
+        )
 
-    writer.writerow([
-        "Estimated Completion Time",
-        estimated_completion_time.strftime("%Y-%m-%d %H:%M:%S")
-    ])
+        total_remaining_hours += remaining_hours
 
-    upload_to_s3(csv_buffer.getvalue())
+        writer.writerow([
+            dag_id,
+            task_id,
+            avg_hours,
+            elapsed_hours,
+            remaining_hours
+        ])
+
+    else:
+
+        total_remaining_hours += avg_hours
+
+        writer.writerow([
+            dag_id,
+            task_id,
+            avg_hours,
+            "",
+            avg_hours
+        ])
 
 
-with DAG(
-    dag_id="dre_task_eta_calculator",
-    start_date=datetime(2025, 1, 1),
-    schedule=None,
-    catchup=False,
-    tags=["eta", "monitoring"]
-) as dag:
+---
 
-    eta_task = PythonOperator(
-        task_id="calculate_task_eta",
-        python_callable=calculate_eta
-    )
+5. Replace ETA Calculation
+
+Replace
+
+estimated_completion_time = (
+    current_time +
+    timedelta(minutes=total_remaining_minutes)
+)
+
+with
+
+estimated_completion_time = (
+    current_time +
+    timedelta(hours=total_remaining_hours)
+)
+
+
+---
+
+6. Replace Summary
+
+Replace
+
+writer.writerow([
+    "Current Running DAG",
+    current_running_dag
+])
+
+writer.writerow([
+    "Target DAG",
+    target_dag
+])
+
+writer.writerow([
+    "Total Remaining Minutes",
+    round(total_remaining_minutes, 2)
+])
+
+with
+
+writer.writerow([
+    "Current Running Task",
+    current_task["task_id"]
+])
+
+writer.writerow([
+    "Target Task",
+    target_task["task_id"]
+])
+
+writer.writerow([
+    "Total Remaining Hours",
+    round(total_remaining_hours, 2)
+])
+
+
+---
+
+Trigger JSON
+
+Use:
+
+{
+  "task_sequence": [
+    {
+      "dag_id": "dre_PQGEMI71",
+      "task_id": "PQGEMI71"
+    },
+    {
+      "dag_id": "dre_CP",
+      "task_id": "PQGEMI78"
+    },
+    {
+      "dag_id": "dre_FPCF",
+      "task_id": "PQGEMD55_clean_end"
+    }
+  ]
+}
+
+⚠️ One more thing: PQGEMD55_clean_end is usually an end marker task. Its runtime may be only a few seconds. Before deploying, check Airflow UI and verify that manager actually wants that task and not the main processing task before it. Otherwise ETA will become misleading.
