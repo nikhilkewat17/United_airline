@@ -1,188 +1,172 @@
-Your current code is already doing the best practical thing for ETA:
+from datetime import datetime, timedelta
+import csv
+import io
+import statistics
 
-Last 14 days history
+import boto3
 
-Successful runs only
+from airflow import DAG
+from airflow.operators.python import PythonOperator
+from airflow.models import TaskInstance
+from airflow.utils.state import State
+from airflow.utils.session import create_session
+from airflow.utils import timezone
 
-Ignore abnormal runs < 30 minutes
 
-Median instead of mean
+LOOKBACK_DAYS = 7
 
-Remaining runtime for currently running DAG
+S3_BUCKET = "dre-rms-mwaa-rms-stg"
+S3_KEY_PREFIX = "dags2/reports"
 
 
-There is no magic code change that will suddenly make the ETA accurate.
 
-The biggest improvement you can make is:
 
-Change 1: Increase lookback window
+def upload_to_s3(csv_content):
 
-Replace:
+    s3 = boto3.client("s3")
 
-LOOKBACK_DAYS = 14
+    file_name = (
+        f"dag_eta_"
+        f"{timezone.utcnow().strftime('%Y%m%d_%H%M%S')}.csv"
+    )
 
-with:
+    s3_key = f"{S3_KEY_PREFIX}/{file_name}"
 
-LOOKBACK_DAYS = 30
+    s3.put_object(
+        Bucket=S3_BUCKET,
+        Key=s3_key,
+        Body=csv_content,
+        ContentType="text/csv"
+    )
 
-This gives more historical data and stabilizes the median.
+    print(f"CSV uploaded to s3://{S3_BUCKET}/{s3_key}")
 
 
----
+def calculate_eta(**context):
 
-Change 2: Show hours in CSV
+    dag_run = context.get("dag_run")
 
-Add below LOOKBACK_DAYS:
+    if not dag_run:
+        raise ValueError("dag_run not found")
 
-def minutes_to_hours(minutes):
+    task_sequence = dag_run.conf.get("task_sequence")
 
-    if minutes is None:
-        return ""
+    if not task_sequence:
+        raise ValueError(
+            "dag_sequence is mandatory in dag_run.conf"
+        )
 
-    return round(minutes / 60, 2)
+    current_running_dag = task_sequence[0]
+    target_dag = task_sequence[-1]
 
+    print(f"DAG Sequence : {task_sequence}")
+    print(f"Current DAG : {current_running_dag}")
+    print(f"Target DAG : {target_dag}")
 
----
+    csv_buffer = io.StringIO()
+    writer = csv.writer(csv_buffer)
 
-Replace:
+    writer.writerow([
+        "dag_id",
+        "task_id",
+        "avg_runtime_minutes",
+        "elapsed_minutes",
+        "remaining_minutes"
+    ])
 
-writer.writerow([
-    "dag_id",
-    "avg_runtime_minutes",
-    "elapsed_minutes",
-    "remaining_minutes"
-])
+    total_remaining_minutes = 0
 
-with:
+    for dag_id in dag_sequence:
 
-writer.writerow([
-    "dag_id",
-    "avg_runtime_hours",
-    "elapsed_hours",
-    "remaining_hours"
-])
+        avg_runtime = get_avg_runtime_minutes(dag_id)
 
+        if avg_runtime is None:
 
----
+            writer.writerow([
+                dag_id,
+                "NO_HISTORY",
+                "",
+                ""
+            ])
 
-Replace:
+            continue
 
-writer.writerow([
-    dag_id,
-    avg_runtime,
-    elapsed_minutes,
-    remaining_runtime
-])
+        if dag_id == current_running_dag:
 
-with:
-
-writer.writerow([
-    dag_id,
-    minutes_to_hours(avg_runtime),
-    minutes_to_hours(elapsed_minutes),
-    minutes_to_hours(remaining_runtime)
-])
-
-
----
-
-Replace:
-
-writer.writerow([
-    dag_id,
-    avg_runtime,
-    "",
-    avg_runtime
-])
-
-with:
-
-writer.writerow([
-    dag_id,
-    minutes_to_hours(avg_runtime),
-    "",
-    minutes_to_hours(avg_runtime)
-])
-
-
----
-
-Change 3: Add Total Hours
-
-Replace:
-
-writer.writerow([
-    "Total Remaining Minutes",
-    round(total_remaining_minutes, 2)
-])
-
-with:
-
-writer.writerow([
-    "Total Remaining Minutes",
-    round(total_remaining_minutes, 2)
-])
-
-writer.writerow([
-    "Total Remaining Hours",
-    round(total_remaining_minutes / 60, 2)
-])
-
-
----
-
-Change 4: Add Confidence Indicator
-
-After:
-
-estimated_completion_time = (
-    current_time +
-    timedelta(minutes=total_remaining_minutes)
-)
-
-add:
-
-confidence = "MEDIUM"
-
-if total_remaining_minutes < 1440:
-    confidence = "HIGH"
-elif total_remaining_minutes > 4320:
-    confidence = "LOW"
-
-And in summary add:
-
-writer.writerow([
-    "Prediction Confidence",
-    confidence
-])
-
-
----
-
-What manager actually wants now
-
-Your manager's latest feedback is not asking for a new ETA formula.
-
-He wants:
-
-> "How close is the ETA to the actual completion time?"
-
-
-
-So the next DAG should be:
-
-dre_dag_eta_accuracy_report
-
-which compares:
-
-Predicted Completion Time
-vs
-Actual FPCF Completion Time
-
-for the last 7–14 runs and reports:
-
-Average Error Hours
-Median Error Hours
-Max Error Hours
-
-That accuracy report will improve confidence in the ETA much more than tweaking the current calculator.
+            remaining_runtime, elapsed_minutes = (
+                get_remaining_runtime_minutes(
+                    dag_id,
+                    avg_runtime
+                )
+            )
+
+            total_remaining_minutes += remaining_runtime
+
+            writer.writerow([
+                dag_id,
+                avg_runtime,
+                elapsed_minutes,
+                remaining_runtime
+            ])
+
+        else:
+
+            total_remaining_minutes += avg_runtime
+
+            writer.writerow([
+                dag_id,
+                avg_runtime,
+                "",
+                avg_runtime
+            ])
+
+    current_time = timezone.utcnow()
+
+    estimated_completion_time = (
+        current_time +
+        timedelta(minutes=total_remaining_minutes)
+    )
+
+    writer.writerow([])
+    writer.writerow(["SUMMARY"])
+
+    writer.writerow([
+        "Current Running DAG",
+        current_running_dag
+    ])
+
+    writer.writerow([
+        "Target DAG",
+        target_dag
+    ])
+
+    writer.writerow([
+        "Total Remaining Minutes",
+        round(total_remaining_minutes, 2)
+    ])
+
+    writer.writerow([
+        "Current UTC Time",
+        current_time.strftime("%Y-%m-%d %H:%M:%S")
+    ])
+
+    writer.writerow([
+        "Estimated Completion Time",
+        estimated_completion_time.strftime("%Y-%m-%d %H:%M:%S")
+    ])
+
+    upload_to_s3(csv_buffer.getvalue())
+
+
+with DAG(
+    dag_id="dre_task_eta_calculator",
+    start_date=datetime(2025, 1, 1),
+    schedule=None,
+    catchup=False,
+    tags=["eta", "monitoring"]
+) as dag:
+
+    eta_task = PythonOperator(
+        task_id="calculate_task_eta",
+        python_callable=calculate_eta
+    )
