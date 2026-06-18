@@ -1,11 +1,8 @@
+from datetime import datetime, timedelta
 import csv
 import io
-import boto3
-
-
-
-from datetime import datetime, timedelta
 import statistics
+import boto3
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
@@ -14,12 +11,14 @@ from airflow.utils.session import create_session
 from airflow.utils.state import State
 from airflow.utils import timezone
 
+
 LOOKBACK_DAYS = 7
+
 S3_BUCKET = "dre-rms-mwaa-rms-stg"
 S3_KEY_PREFIX = "dags2/reports"
 
 
-def get_task_runtime(dag_id, task_id):
+def get_task_runtime_hours(dag_id, task_id):
 
     runtimes = []
 
@@ -43,7 +42,7 @@ def get_task_runtime(dag_id, task_id):
 
         for ti in task_instances:
 
-            if ti.duration:
+            if ti.duration is not None:
 
                 runtimes.append(
                     ti.duration / 3600
@@ -57,12 +56,13 @@ def get_task_runtime(dag_id, task_id):
         2
     )
 
+
 def upload_to_s3(csv_content):
 
     s3 = boto3.client("s3")
 
     file_name = (
-        f"dependency_analysis_"
+        f"task_eta_"
         f"{timezone.utcnow().strftime('%Y%m%d_%H%M%S')}.csv"
     )
 
@@ -80,7 +80,7 @@ def upload_to_s3(csv_content):
     )
 
 
-def analyze_dag(**context):
+def calculate_eta(**context):
 
     dag_run = context.get("dag_run")
 
@@ -98,131 +98,121 @@ def analyze_dag(**context):
             f"DAG {dag_id} not found"
         )
 
-    print("=" * 100)
-    print(f"DAG ANALYSIS : {dag_id}")
-    print("=" * 100)
-
     csv_buffer = io.StringIO()
-
     writer = csv.writer(csv_buffer)
+
     writer.writerow([
         "task_id",
-        "median_runtime_hours",
-        "upstream_tasks",
-        "downstream_tasks",
-        "upstream_count"
-        "downstream_count"
+        "median_runtime_hours"
     ])
 
-    root_tasks = []
-    end_tasks = []
+    total_hours = 0
 
-    total_runtime = 0
+    business_tasks = []
 
     for task in dag.tasks:
 
-        runtime = get_task_runtime(
-            dag_id,
-            task.task_id
-        )
+        task_id = task.task_id
 
-        total_runtime += runtime
+        if (
+            "Sensor" in task_id
+            or "sensor" in task_id
+            or "_clean_start" in task_id
+            or "_clean_end" in task_id
+            or "_Success" in task_id
+            or task_id.startswith("ets_")
+        ):
+            continue
 
-        upstream = list(
-            task.upstream_task_ids
-        )
+        business_tasks.append(task_id)
 
-        downstream = list(
-            task.downstream_task_ids
-        )
-
-        if not upstream:
-            root_tasks.append(
-                task.task_id
-            )
-
-        if not downstream:
-            end_tasks.append(
-                task.task_id
-            )
-
-        print("-" * 80)
-
-        print(
-            f"TASK ID : {task.task_id}"
-        )
-
-        print(
-            f"UPSTREAM : {upstream}"
-        )
-
-        print(
-            f"DOWNSTREAM : {downstream}"
-        )
-
-        print(
-            f"MEDIAN_RUNTIME_HOURS : {runtime}"
-        )
-
-        writer.writerow([
-            task.task_id,
-            runtime,
-            ",".join(upstream),
-            ",".join(downstream),
-            len(upstream),
-            len(downstream)
-        ])
+    business_tasks = sorted(business_tasks)
 
     print("=" * 100)
+    print(f"DAG : {dag_id}")
+    print("=" * 100)
 
-    print(
-        f"ROOT TASKS : {root_tasks}"
-    )
+    for task_id in business_tasks:
 
-    print(
-        f"END TASKS : {end_tasks}"
-    )
+        runtime = get_task_runtime_hours(
+            dag_id,
+            task_id
+        )
 
-    print(
-        f"ESTIMATED_FULL_DAG_RUNTIME_HOURS : "
-        f"{round(total_runtime,2)}"
+        total_hours += runtime
+
+        writer.writerow([
+            task_id,
+            runtime
+        ])
+
+        print(
+            f"TASK={task_id} "
+            f"RUNTIME={runtime} hrs"
+        )
+
+    estimated_completion_time = (
+        timezone.utcnow()
+        + timedelta(hours=total_hours)
     )
 
     writer.writerow([])
     writer.writerow(["SUMMARY"])
+
+    writer.writerow([
+        "DAG_ID",
+        dag_id
+    ])
+
     writer.writerow([
         "TOTAL_TASKS",
-        len(dag.tasks)
+        len(business_tasks)
     ])
+
     writer.writerow([
-        "ROOT_TASKS",
-        ",".join(root_tasks)
+        "TOTAL_RUNTIME_HOURS",
+        round(total_hours, 2)
     ])
+
     writer.writerow([
-        "END_TASKS",
-        ",".join(end_tasks)
+        "CURRENT_TIME",
+        timezone.utcnow().strftime(
+            "%Y-%m-%d %H:%M:%S"
+        )
     ])
+
     writer.writerow([
-        "ESTIMATED_FULL_DAG_RUNTIME_HOURS",
-         round(total_runtime, 2)
+        "ESTIMATED_COMPLETION_TIME",
+        estimated_completion_time.strftime(
+            "%Y-%m-%d %H:%M:%S"
+        )
     ])
 
     print("=" * 100)
-    
+    print(
+        f"TOTAL_RUNTIME_HOURS = "
+        f"{round(total_hours,2)}"
+    )
+    print(
+        f"ESTIMATED_COMPLETION_TIME = "
+        f"{estimated_completion_time}"
+    )
+    print("=" * 100)
+
     upload_to_s3(
         csv_buffer.getvalue()
     )
 
 
 with DAG(
-    dag_id="dre_dag_dependency_analysis",
+    dag_id="dre_cp_task_eta_calculator",
     start_date=datetime(2025, 1, 1),
     schedule=None,
     catchup=False,
-    tags=["analysis", "eta"]
+    tags=["eta"]
 ) as dag:
 
-    analyze_task = PythonOperator(
-        task_id="analyze_dag",
-        python_callable=analyze_dag
+    eta_task = PythonOperator(
+        task_id="calculate_eta",
+        python_callable=calculate_eta
     )
