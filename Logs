@@ -1,66 +1,405 @@
-ip-10-34-217-49.us-east-2.compute.internal
-*** Reading remote log from Cloudwatch log_group: airflow-dre-stg-Primary-MWAAEnvironment-2-Task log_stream: dag_id=dre_dag_eta_calculator/run_id=manual__2026-06-15T15_44_05+00_00/task_id=calculate_dag_eta/attempt=1.log.
-[2026-06-15, 15:45:13 UTC] {{taskinstance.py:1103}} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: dre_dag_eta_calculator.calculate_dag_eta manual__2026-06-15T15:44:05+00:00 [queued]>
-[2026-06-15, 15:45:13 UTC] {{taskinstance.py:1103}} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: dre_dag_eta_calculator.calculate_dag_eta manual__2026-06-15T15:44:05+00:00 [queued]>
-[2026-06-15, 15:45:13 UTC] {{taskinstance.py:1308}} INFO - Starting attempt 1 of 1
-[2026-06-15, 15:45:13 UTC] {{taskinstance.py:1327}} INFO - Executing <Task(PythonOperator): calculate_dag_eta> on 2026-06-15 15:44:05+00:00
-[2026-06-15, 15:45:13 UTC] {{standard_task_runner.py:57}} INFO - Started process 157449 to run task
-[2026-06-15, 15:45:13 UTC] {{standard_task_runner.py:84}} INFO - Running: ['airflow', 'tasks', 'run', 'dre_dag_eta_calculator', 'calculate_dag_eta', 'manual__2026-06-15T15:44:05+00:00', '--job-id', '162893909', '--raw', '--subdir', 'DAGS_FOLDER/Estimate_time_test.py', '--cfg-path', '/tmp/tmp_s5d30wd']
-[2026-06-15, 15:45:13 UTC] {{standard_task_runner.py:85}} INFO - Job 162893909: Subtask calculate_dag_eta
-[2026-06-15, 15:45:14 UTC] {{taskinstance.py:1545}} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='dre_dag_eta_calculator' AIRFLOW_CTX_TASK_ID='calculate_dag_eta' AIRFLOW_CTX_EXECUTION_DATE='2026-06-15T15:44:05+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-06-15T15:44:05+00:00'
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG Sequence : ['dre_PQGEMI71', 'dre_CP', 'dre_FPCF']
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - Current DAG : dre_PQGEMI71
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - Target DAG : dre_FPCF
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_PQGEMI71 | RUN_ID=scheduled__2026-06-08T05:00:00+00:00 | START=2026-06-09 05:00:21.611160+00:00 | END=2026-06-09 22:45:54.855731+00:00 | RUNTIME_MINUTES=1065.5540761833333
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_PQGEMI71 | RUN_ID=scheduled__2026-06-13T05:00:00+00:00 | START=2026-06-14 23:39:23.389211+00:00 | END=2026-06-14 23:39:28.554107+00:00 | RUNTIME_MINUTES=0.0860816
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - IGNORING RUN scheduled__2026-06-13T05:00:00+00:00 BECAUSE RUNTIME=0.0860816
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_PQGEMI71 | RUN_ID=scheduled__2026-06-04T05:00:00+00:00 | START=2026-06-05 05:00:19.561246+00:00 | END=2026-06-05 22:25:15.744716+00:00 | RUNTIME_MINUTES=1044.9363911666667
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_PQGEMI71 | RUN_ID=scheduled__2026-06-11T05:00:00+00:00 | START=2026-06-12 05:00:19.810946+00:00 | END=2026-06-12 23:12:22.936987+00:00 | RUNTIME_MINUTES=1092.0521006833335
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_PQGEMI71 | RUN_ID=scheduled__2026-06-03T05:00:00+00:00 | START=2026-06-04 05:00:17.802615+00:00 | END=2026-06-04 21:22:53.465707+00:00 | RUNTIME_MINUTES=982.5943848666667
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_PQGEMI71 | RUN_ID=scheduled__2026-06-02T05:00:00+00:00 | START=2026-06-03 05:00:23.108510+00:00 | END=2026-06-03 23:10:17.846551+00:00 | RUNTIME_MINUTES=1089.9123006833333
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_PQGEMI71 | RUN_ID=scheduled__2026-06-09T05:00:00+00:00 | START=2026-06-11 05:34:51.403220+00:00 | END=2026-06-11 05:35:01.583634+00:00 | RUNTIME_MINUTES=0.1696735666666667
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - IGNORING RUN scheduled__2026-06-09T05:00:00+00:00 BECAUSE RUNTIME=0.1696735666666667
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_PQGEMI71 | RUN_ID=scheduled__2026-06-12T05:00:00+00:00 | START=2026-06-13 05:00:23.387916+00:00 | END=2026-06-13 22:53:15.283413+00:00 | RUNTIME_MINUTES=1072.86492495
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_PQGEMI71 | RUN_ID=scheduled__2026-06-10T05:00:00+00:00 | START=2026-06-11 05:00:21.947259+00:00 | END=2026-06-11 23:07:00.456697+00:00 | RUNTIME_MINUTES=1086.6418239666666
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_PQGEMI71 | RUN_ID=scheduled__2026-06-06T05:00:00+00:00 | START=2026-06-08 01:01:18.114622+00:00 | END=2026-06-08 01:01:24.527336+00:00 | RUNTIME_MINUTES=0.10687856666666667
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - IGNORING RUN scheduled__2026-06-06T05:00:00+00:00 BECAUSE RUNTIME=0.10687856666666667
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_PQGEMI71 | RUN_ID=scheduled__2026-06-05T05:00:00+00:00 | START=2026-06-06 05:00:21.260520+00:00 | END=2026-06-07 01:27:29.803889+00:00 | RUNTIME_MINUTES=1227.1423894833335
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_PQGEMI71 | RUN_ID=scheduled__2026-06-07T05:00:00+00:00 | START=2026-06-08 05:00:22.161218+00:00 | END=2026-06-08 23:46:26.559933+00:00 | RUNTIME_MINUTES=1126.0733119166666
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_PQGEMI71, VALID_RUNS=9, MEDIAN_RUNTIME=1086.6418239666666
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - ========== RUNNING DAG ==========
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG ID : dre_PQGEMI71
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - RUN ID : scheduled__2026-06-14T05:00:00+00:00
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - STATE : running
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - START DATE : 2026-06-15 05:00:20.690468+00:00
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - EXEC DATE : 2026-06-14 05:00:00+00:00
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - =================================
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_CP | RUN_ID=scheduled__2026-06-03T05:00:00+00:00 | START=2026-06-04 05:00:11.836782+00:00 | END=2026-06-05 05:33:28.382478+00:00 | RUNTIME_MINUTES=1473.2757616000001
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_CP | RUN_ID=scheduled__2026-06-10T05:00:00+00:00 | START=2026-06-11 05:00:13.320752+00:00 | END=2026-06-12 08:58:54.403254+00:00 | RUNTIME_MINUTES=1678.6847083666667
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_CP | RUN_ID=scheduled__2026-06-12T05:00:00+00:00 | START=2026-06-13 05:00:13.921458+00:00 | END=2026-06-14 05:14:38.301541+00:00 | RUNTIME_MINUTES=1454.4063347166666
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_CP | RUN_ID=scheduled__2026-06-08T05:00:00+00:00 | START=2026-06-09 05:00:11.804337+00:00 | END=2026-06-10 05:32:23.054105+00:00 | RUNTIME_MINUTES=1472.1874961333333
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_CP | RUN_ID=scheduled__2026-06-02T05:00:00+00:00 | START=2026-06-03 05:00:14.797609+00:00 | END=2026-06-04 05:07:07.316974+00:00 | RUNTIME_MINUTES=1446.87532275
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_CP | RUN_ID=scheduled__2026-06-11T05:00:00+00:00 | START=2026-06-12 05:00:13.859365+00:00 | END=2026-06-13 05:37:52.088965+00:00 | RUNTIME_MINUTES=1477.63716
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_CP | RUN_ID=scheduled__2026-06-04T05:00:00+00:00 | START=2026-06-05 05:00:13.037922+00:00 | END=2026-06-06 05:14:43.733712+00:00 | RUNTIME_MINUTES=1454.5115965
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_CP | RUN_ID=scheduled__2026-06-13T05:00:00+00:00 | START=2026-06-14 05:00:14.568219+00:00 | END=2026-06-15 05:31:08.947384+00:00 | RUNTIME_MINUTES=1470.9063194166667
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_CP | RUN_ID=scheduled__2026-06-05T05:00:00+00:00 | START=2026-06-06 05:00:14.067650+00:00 | END=2026-06-07 12:42:44.300276+00:00 | RUNTIME_MINUTES=1902.5038771
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_CP | RUN_ID=scheduled__2026-06-09T05:00:00+00:00 | START=2026-06-10 05:00:12.179064+00:00 | END=2026-06-11 05:32:30.267132+00:00 | RUNTIME_MINUTES=1472.3014678
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_CP | RUN_ID=scheduled__2026-06-06T05:00:00+00:00 | START=2026-06-07 05:00:16.150250+00:00 | END=2026-06-08 06:40:20.412102+00:00 | RUNTIME_MINUTES=1540.0710308666667
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_CP | RUN_ID=scheduled__2026-06-07T05:00:00+00:00 | START=2026-06-08 05:00:13.909126+00:00 | END=2026-06-09 06:08:44.570343+00:00 | RUNTIME_MINUTES=1508.5110202833334
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_CP, VALID_RUNS=12, MEDIAN_RUNTIME=1472.7886147
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_FPCF | RUN_ID=scheduled__2026-06-04T05:00:00+00:00 | START=2026-06-05 05:00:08.266682+00:00 | END=2026-06-06 06:53:27.261851+00:00 | RUNTIME_MINUTES=1553.31658615
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_FPCF | RUN_ID=scheduled__2026-06-08T05:00:00+00:00 | START=2026-06-09 05:00:11.439871+00:00 | END=2026-06-10 07:17:45.874560+00:00 | RUNTIME_MINUTES=1577.5739114833334
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_FPCF | RUN_ID=scheduled__2026-06-05T05:00:00+00:00 | START=2026-06-06 05:00:09.971242+00:00 | END=2026-06-07 14:19:34.858763+00:00 | RUNTIME_MINUTES=1999.4147920166665
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_FPCF | RUN_ID=scheduled__2026-06-09T05:00:00+00:00 | START=2026-06-10 05:00:11.738654+00:00 | END=2026-06-11 07:13:27.080760+00:00 | RUNTIME_MINUTES=1573.2557017666666
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_FPCF | RUN_ID=scheduled__2026-06-06T05:00:00+00:00 | START=2026-06-07 05:00:14.100446+00:00 | END=2026-06-08 08:06:56.226750+00:00 | RUNTIME_MINUTES=1626.7021050666667
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_FPCF | RUN_ID=scheduled__2026-06-12T05:00:00+00:00 | START=2026-06-13 05:00:13.712001+00:00 | END=2026-06-14 06:56:21.049988+00:00 | RUNTIME_MINUTES=1556.1222997833333
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_FPCF | RUN_ID=scheduled__2026-06-10T05:00:00+00:00 | START=2026-06-11 05:00:12.552448+00:00 | END=2026-06-12 10:27:30.945719+00:00 | RUNTIME_MINUTES=1767.3065545166667
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_FPCF | RUN_ID=scheduled__2026-06-11T05:00:00+00:00 | START=2026-06-12 05:00:13.095642+00:00 | END=2026-06-13 07:21:47.097252+00:00 | RUNTIME_MINUTES=1581.5666935000002
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_FPCF | RUN_ID=scheduled__2026-06-13T05:00:00+00:00 | START=2026-06-14 05:00:13.886038+00:00 | END=2026-06-15 07:09:09.792826+00:00 | RUNTIME_MINUTES=1568.9317798
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_FPCF | RUN_ID=scheduled__2026-06-07T05:00:00+00:00 | START=2026-06-08 05:00:13.784576+00:00 | END=2026-06-09 07:44:21.656452+00:00 | RUNTIME_MINUTES=1604.1311979333334
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_FPCF | RUN_ID=scheduled__2026-06-02T05:00:00+00:00 | START=2026-06-03 05:00:11.754506+00:00 | END=2026-06-04 06:54:28.234481+00:00 | RUNTIME_MINUTES=1554.2746662499999
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_FPCF | RUN_ID=scheduled__2026-06-03T05:00:00+00:00 | START=2026-06-04 05:00:10.946062+00:00 | END=2026-06-05 07:10:08.113570+00:00 | RUNTIME_MINUTES=1569.9527917999999
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - DAG=dre_FPCF, VALID_RUNS=12, MEDIAN_RUNTIME=1575.414806625
-[2026-06-15, 15:45:14 UTC] {{logging_mixin.py:150}} INFO - CSV uploaded to s3://dre-rms-mwaa-rms-stg/dags2/reports/dag_eta_20260615_154514.csv
-[2026-06-15, 15:45:14 UTC] {{python.py:183}} INFO - Done. Returned value was: None
-[2026-06-15, 15:45:14 UTC] {{taskinstance.py:1345}} INFO - Marking task as SUCCESS. dag_id=dre_dag_eta_calculator, task_id=calculate_dag_eta, execution_date=20260615T154405, start_date=20260615T154513, end_date=20260615T154514
-[2026-06-15, 15:45:15 UTC] {{local_task_job_runner.py:225}} INFO - Task exited with return code 0
+ip-10-34-217-26.us-east-2.compute.internal
+*** Reading remote log from Cloudwatch log_group: airflow-dre-stg-Primary-MWAAEnvironment-2-Task log_stream: dag_id=dre_dag_dependency_analysis/run_id=manual__2026-06-18T09_17_29+00_00/task_id=analyze_dag/attempt=1.log.
+[2026-06-18, 09:18:34 UTC] {{taskinstance.py:1103}} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: dre_dag_dependency_analysis.analyze_dag manual__2026-06-18T09:17:29+00:00 [queued]>
+[2026-06-18, 09:18:34 UTC] {{taskinstance.py:1103}} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: dre_dag_dependency_analysis.analyze_dag manual__2026-06-18T09:17:29+00:00 [queued]>
+[2026-06-18, 09:18:34 UTC] {{taskinstance.py:1308}} INFO - Starting attempt 1 of 1
+[2026-06-18, 09:18:34 UTC] {{taskinstance.py:1327}} INFO - Executing <Task(PythonOperator): analyze_dag> on 2026-06-18 09:17:29+00:00
+[2026-06-18, 09:18:34 UTC] {{standard_task_runner.py:57}} INFO - Started process 107790 to run task
+[2026-06-18, 09:18:34 UTC] {{standard_task_runner.py:84}} INFO - Running: ['airflow', 'tasks', 'run', 'dre_dag_dependency_analysis', 'analyze_dag', 'manual__2026-06-18T09:17:29+00:00', '--job-id', '163681654', '--raw', '--subdir', 'DAGS_FOLDER/Estimate_task_dag.py', '--cfg-path', '/tmp/tmpmn32ox_t']
+[2026-06-18, 09:18:34 UTC] {{standard_task_runner.py:85}} INFO - Job 163681654: Subtask analyze_dag
+[2026-06-18, 09:18:34 UTC] {{taskinstance.py:1545}} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='dre_dag_dependency_analysis' AIRFLOW_CTX_TASK_ID='analyze_dag' AIRFLOW_CTX_EXECUTION_DATE='2026-06-18T09:17:29+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-06-18T09:17:29+00:00'
+[2026-06-18, 09:18:35 UTC] {{logging_mixin.py:150}} WARNING - /usr/local/airflow/.local/lib/python3.10/site-packages/airflow/models/baseoperator.py:429 RemovedInAirflow3Warning: provide_context is deprecated as of 2.0 and is no longer required
+[2026-06-18, 09:18:38 UTC] {{dre_MWAA_DB_Cleanup.py:170}} ERROR - type object 'TaskFail' has no attribute 'execution_date'
+[2026-06-18, 09:18:38 UTC] {{logging_mixin.py:150}} WARNING - /usr/local/airflow/.local/lib/python3.10/site-packages/airflow/models/param.py:73 RemovedInAirflow3Warning: The use of non-json-serializable params is deprecated and will be removed in a future release
+[2026-06-18, 09:18:42 UTC] {{dagbag.py:509}} ERROR - Exception bagging dag: dre_PQGEMB44
+Traceback (most recent call last):
+  File "/usr/local/airflow/.local/lib/python3.10/site-packages/airflow/models/dagbag.py", line 500, in _bag_dag
+    raise AirflowDagDuplicatedIdException(
+airflow.exceptions.AirflowDagDuplicatedIdException: Ignoring DAG dre_PQGEMB44 from /usr/local/airflow/dags/dre_PQGEMB44.py - also found in /usr/local/airflow/dags/dre_PQGEMB44_aug23.py
+[2026-06-18, 09:18:42 UTC] {{dagbag.py:447}} ERROR - Failed to bag_dag: /usr/local/airflow/dags/dre_PQGEMB44.py
+Traceback (most recent call last):
+  File "/usr/local/airflow/.local/lib/python3.10/site-packages/airflow/models/dagbag.py", line 445, in _process_modules
+    self.bag_dag(dag=dag, root_dag=dag)
+  File "/usr/local/airflow/.local/lib/python3.10/site-packages/airflow/models/dagbag.py", line 462, in bag_dag
+    self._bag_dag(dag=dag, root_dag=root_dag, recursive=True)
+  File "/usr/local/airflow/.local/lib/python3.10/site-packages/airflow/models/dagbag.py", line 500, in _bag_dag
+    raise AirflowDagDuplicatedIdException(
+airflow.exceptions.AirflowDagDuplicatedIdException: Ignoring DAG dre_PQGEMB44 from /usr/local/airflow/dags/dre_PQGEMB44.py - also found in /usr/local/airflow/dags/dre_PQGEMB44_aug23.py
+[2026-06-18, 09:18:43 UTC] {{dagbag.py:509}} ERROR - Exception bagging dag: dre_CycleTimeEstimator
+Traceback (most recent call last):
+  File "/usr/local/airflow/.local/lib/python3.10/site-packages/airflow/models/dagbag.py", line 500, in _bag_dag
+    raise AirflowDagDuplicatedIdException(
+airflow.exceptions.AirflowDagDuplicatedIdException: Ignoring DAG dre_CycleTimeEstimator from /usr/local/airflow/dags/temp_k.py - also found in /usr/local/airflow/dags/dre_CyckeTimeEstimator.py
+[2026-06-18, 09:18:43 UTC] {{dagbag.py:447}} ERROR - Failed to bag_dag: /usr/local/airflow/dags/temp_k.py
+Traceback (most recent call last):
+  File "/usr/local/airflow/.local/lib/python3.10/site-packages/airflow/models/dagbag.py", line 445, in _process_modules
+    self.bag_dag(dag=dag, root_dag=dag)
+  File "/usr/local/airflow/.local/lib/python3.10/site-packages/airflow/models/dagbag.py", line 462, in bag_dag
+    self._bag_dag(dag=dag, root_dag=root_dag, recursive=True)
+  File "/usr/local/airflow/.local/lib/python3.10/site-packages/airflow/models/dagbag.py", line 500, in _bag_dag
+    raise AirflowDagDuplicatedIdException(
+airflow.exceptions.AirflowDagDuplicatedIdException: Ignoring DAG dre_CycleTimeEstimator from /usr/local/airflow/dags/temp_k.py - also found in /usr/local/airflow/dags/dre_CyckeTimeEstimator.py
+[2026-06-18, 09:18:43 UTC] {{dagbag.py:509}} ERROR - Exception bagging dag: dre_PQGEMD08
+Traceback (most recent call last):
+  File "/usr/local/airflow/.local/lib/python3.10/site-packages/airflow/models/dagbag.py", line 500, in _bag_dag
+    raise AirflowDagDuplicatedIdException(
+airflow.exceptions.AirflowDagDuplicatedIdException: Ignoring DAG dre_PQGEMD08 from /usr/local/airflow/dags/dre_PQGEMD08.py - also found in /usr/local/airflow/dags/dre_PQGEMD08_bkp_sep1.py
+[2026-06-18, 09:18:43 UTC] {{dagbag.py:447}} ERROR - Failed to bag_dag: /usr/local/airflow/dags/dre_PQGEMD08.py
+Traceback (most recent call last):
+  File "/usr/local/airflow/.local/lib/python3.10/site-packages/airflow/models/dagbag.py", line 445, in _process_modules
+    self.bag_dag(dag=dag, root_dag=dag)
+  File "/usr/local/airflow/.local/lib/python3.10/site-packages/airflow/models/dagbag.py", line 462, in bag_dag
+    self._bag_dag(dag=dag, root_dag=root_dag, recursive=True)
+  File "/usr/local/airflow/.local/lib/python3.10/site-packages/airflow/models/dagbag.py", line 500, in _bag_dag
+    raise AirflowDagDuplicatedIdException(
+airflow.exceptions.AirflowDagDuplicatedIdException: Ignoring DAG dre_PQGEMD08 from /usr/local/airflow/dags/dre_PQGEMD08.py - also found in /usr/local/airflow/dags/dre_PQGEMD08_bkp_sep1.py
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - ====================================================================================================
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - DAG ANALYSIS : dre_CP
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - ====================================================================================================
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - TASK ID : CP_TIME_SENSOR
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : []
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['S3_Sensor_PROD_TVF_PQGEMA12_dom', 'ets_PQGEMR40', 'S3_Sensor_PROD_CPF_PQGEMA12_dom', 'ets_PQGEMD08', 'ets_PQGEMI27', 'S3_Sensor_ADJ_ELASTICITY', 'S3_Sensor_PROD_CPF_PQGEMA12_intl', 'ets_PQGEMK74', 'ets_PQGEMD48', 'S3_Sensor_PROD_TVF_PQGEMA12_intl', 'ets_PQGEMD47_PAX']
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.0
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - TASK ID : ets_PQGEMI27
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['CP_TIME_SENSOR']
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI72_clean_start']
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.0
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - TASK ID : ets_PQGEMD08
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['CP_TIME_SENSOR']
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI72_clean_start']
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.0
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - TASK ID : S3_Sensor_ADJ_ELASTICITY
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['CP_TIME_SENSOR']
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI72_clean_start']
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.0
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI72_clean_start
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['S3_Sensor_ADJ_ELASTICITY', 'ets_PQGEMD08', 'ets_PQGEMI27']
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI72']
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.01
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI72
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI72_clean_start']
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI72_clean_end']
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.12
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI72_clean_end
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI72']
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI72_Success', 'PQGEMI73_clean_start']
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.01
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI72_Success
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI72_clean_end']
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : []
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.0
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - TASK ID : ets_PQGEMD48
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['CP_TIME_SENSOR']
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['ets_PQGEMI71']
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.0
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - TASK ID : ets_PQGEMI71
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['S3_Sensor_PROD_TVF_PQGEMA12_dom', 'ets_PQGEMR40', 'S3_Sensor_PROD_CPF_PQGEMA12_dom', 'S3_Sensor_PROD_CPF_PQGEMA12_intl', 'ets_PQGEMD48', 'S3_Sensor_PROD_TVF_PQGEMA12_intl', 'ets_PQGEMD47_PAX']
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI73_clean_start']
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.0
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - TASK ID : ets_PQGEMD47_PAX
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['CP_TIME_SENSOR']
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['ets_PQGEMI71']
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.0
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - TASK ID : S3_Sensor_PROD_CPF_PQGEMA12_dom
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['CP_TIME_SENSOR']
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['ets_PQGEMI71']
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.0
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - TASK ID : S3_Sensor_PROD_TVF_PQGEMA12_dom
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['CP_TIME_SENSOR']
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['ets_PQGEMI71']
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.0
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - TASK ID : S3_Sensor_PROD_CPF_PQGEMA12_intl
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['CP_TIME_SENSOR']
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['ets_PQGEMI71']
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.0
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - TASK ID : S3_Sensor_PROD_TVF_PQGEMA12_intl
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['CP_TIME_SENSOR']
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['ets_PQGEMI71']
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.0
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - TASK ID : ets_PQGEMR40
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['CP_TIME_SENSOR']
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['ets_PQGEMI71']
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.0
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI73_clean_start
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI72_clean_end', 'PQGEMK38_clean_end', 'ets_PQGEMI71']
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI73']
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.0
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI73
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI73_clean_start']
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI76_clean_start', 'PQGEMI75_clean_start', 'PQGEMI74_clean_start']
+[2026-06-18, 09:18:48 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.67
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI73_cp2s3
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['S3_Sensor_ADJ_CLS_PART_RECAP_RATE']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI73_clean_end']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.5
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI73_clean_end
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI73_cp2s3']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI73_Success']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.01
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI73_Success
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI73_clean_end']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : []
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.0
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI74_clean_start
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI73']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI74']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.01
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI74
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI74_clean_start']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['S3_Sensor_ADJ_CLS_PART_RECAP_RATE']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.19
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI74_cp2s3
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['S3_Sensor_RCFDemandAdjustExclusion']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI74_clean_end']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.21
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI74_clean_end
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI74_cp2s3']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI74_Success']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.01
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI74_Success
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI74_clean_end']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : []
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.0
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI75_clean_start
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI73']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI75']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.01
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI75
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI75_clean_start']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['S3_Sensor_ADJ_CLS_PART_RECAP_RATE']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.73
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI75_cp2s3
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['S3_Sensor_RCFDemandAdjustExclusion']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI75_clean_end']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.32
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI75_clean_end
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI75_cp2s3']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI75_Success']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.01
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI75_Success
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI75_clean_end']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : []
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.0
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI76_clean_start
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI73']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI76']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.01
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI76
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI76_clean_start']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['S3_Sensor_ADJ_CLS_PART_RECAP_RATE']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 1.68
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI76_cp2s3
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['S3_Sensor_RCFDemandAdjustExclusion']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI76_clean_end']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.59
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI76_clean_end
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI76_cp2s3']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI76_Success']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.0
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI76_Success
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI76_clean_end']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : []
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.0
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - TASK ID : S3_Sensor_ADJ_CLS_PART_RECAP_RATE
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI75', 'PQGEMI76', 'PQGEMI74']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI77_INT_clean_start', 'PQGEMI77_DOM_clean_start', 'PQGEMI73_cp2s3']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.0
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI77_DOM_clean_start
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['S3_Sensor_ADJ_CLS_PART_RECAP_RATE']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI77_DOM']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.01
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI77_DOM
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI77_DOM_clean_start']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['S3_Sensor_RCFDemandAdjustExclusion']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 1.17
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI77_DOM_cp2s3
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI78']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI77_DOM_clean_end']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.39
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI77_DOM_clean_end
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI77_DOM_cp2s3']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI77_DOM_Success']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.01
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI77_DOM_Success
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI77_DOM_clean_end']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : []
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.0
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI77_INT_clean_start
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['S3_Sensor_ADJ_CLS_PART_RECAP_RATE']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI77_INT']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.01
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI77_INT
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI77_INT_clean_start']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['S3_Sensor_RCFDemandAdjustExclusion']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 1.01
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI77_INT_cp2s3
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI78']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI77_INT_clean_end']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.37
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI77_INT_clean_end
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI77_INT_cp2s3']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI77_INT_Success']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.01
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI77_INT_Success
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI77_INT_clean_end']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : []
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.0
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - TASK ID : S3_Sensor_RCFDemandAdjustExclusion
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI77_INT', 'PQGEMI77_DOM']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI75_cp2s3', 'PQGEMI74_cp2s3', 'PQGEMI76_cp2s3', 'PQGEMI78_clean_start']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.0
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI78_clean_start
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['S3_Sensor_RCFDemandAdjustExclusion']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI78']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.04
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI78
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI78_clean_start']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI10_clean_start', 'ets_PQGEMD55', 'Downlines.Markers.etm_PQGEMD55', 'PQGEMI77_DOM_cp2s3', 'CP_Success', 'PQGEMI77_INT_cp2s3']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.78
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI78_cp2s3
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['ets_PQGEMD55']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI78_clean_end']
+[2026-06-18, 09:18:49 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.77
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI78_clean_end
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI78_cp2s3']
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI78_Success']
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.01
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI78_Success
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI78_clean_end']
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : []
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.0
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI10_clean_start
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI78']
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI10']
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.01
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI10
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI10_clean_start']
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI10_clean_end']
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.1
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI10_clean_end
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI10']
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI10_Success']
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.01
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMI10_Success
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI10_clean_end']
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : []
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.0
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - TASK ID : ets_PQGEMD55
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI78']
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI78_cp2s3']
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.0
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - TASK ID : ets_PQGEMK74
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['CP_TIME_SENSOR']
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMK38_clean_start']
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.0
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMK38_clean_start
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['ets_PQGEMK74']
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMK38']
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.0
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMK38
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMK38_clean_start']
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMK38_clean_end']
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.08
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMK38_clean_end
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMK38']
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['PQGEMI73_clean_start', 'PQGEMK38_Success']
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.01
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - TASK ID : PQGEMK38_Success
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMK38_clean_end']
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : []
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.0
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - TASK ID : CP_Success
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI78']
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['SLADummy', 'SLATask']
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.0
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - TASK ID : CP_SLA_TIME
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : []
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['SLADummy']
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.0
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - TASK ID : SLADummy
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['CP_Success', 'CP_SLA_TIME']
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : ['SLATask']
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.0
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - TASK ID : SLATask
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['SLADummy', 'CP_Success']
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : []
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.0
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - --------------------------------------------------------------------------------
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - TASK ID : Downlines.Markers.etm_PQGEMD55
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - UPSTREAM : ['PQGEMI78']
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - DOWNSTREAM : []
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - MEDIAN_RUNTIME_HOURS : 0.0
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - ====================================================================================================
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - ROOT TASKS : ['CP_TIME_SENSOR', 'CP_SLA_TIME']
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - END TASKS : ['PQGEMI72_Success', 'PQGEMI73_Success', 'PQGEMI74_Success', 'PQGEMI75_Success', 'PQGEMI76_Success', 'PQGEMI77_DOM_Success', 'PQGEMI77_INT_Success', 'PQGEMI78_Success', 'PQGEMI10_Success', 'PQGEMK38_Success', 'SLATask', 'Downlines.Markers.etm_PQGEMD55']
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - ESTIMATED_FULL_DAG_RUNTIME_HOURS : 9.88
+[2026-06-18, 09:18:50 UTC] {{logging_mixin.py:150}} INFO - ====================================================================================================
+[2026-06-18, 09:18:50 UTC] {{python.py:183}} INFO - Done. Returned value was: None
+[2026-06-18, 09:18:50 UTC] {{taskinstance.py:1345}} INFO - Marking task as SUCCESS. dag_id=dre_dag_de
