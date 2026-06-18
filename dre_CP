@@ -1,0 +1,902 @@
+#################################################################
+#
+# Created By : UAL
+# Date: 01/08/2026
+# Description: DAG for Class Partitioning
+#
+################################################################
+
+from airflow.models import DAG
+from airflow.operators.python_operator import PythonOperator
+from airflow.operators.dummy_operator import DummyOperator
+from airflow.providers.amazon.aws.operators.batch import BatchOperator as AwsBatchOperator
+from airflow.sensors.s3_key_sensor import S3KeySensor
+from airflow.sensors.date_time_sensor import DateTimeSensor
+from airflow.sensors.external_task import ExternalTaskMarker, ExternalTaskSensor
+from airflow.utils.task_group import TaskGroup
+
+from dags_universal_code.dags_universal_parameters_and_functions_script import *
+
+if Environment == "prd":
+     job_definition_RI="arn:aws:batch:us-east-2:062133575813:job-definition/devops-oet-dre-job_def_ecr-RI"
+     job_queue_RI="arn:aws:batch:us-east-2:062133575813:job-queue/devops-oet-dre-jobqueue-ec2-RI"
+else:
+     job_definition_RI="arn:aws:batch:us-east-2:666445909683:job-definition/devops-oet-dre-job_def_ecr-RI"
+     job_queue_RI="arn:aws:batch:us-east-2:666445909683:job-queue/devops-oet-dre-jobqueue-ec2-RI"
+
+
+dag_id = 'dre_CP'
+
+NODES = '87'
+JOBNAME = 'CP'
+
+PQGEMI72_JOBNAME     = 'PQGEMI72'
+PQGEMI73_JOBNAME     = 'PQGEMI73'
+PQGEMI74_JOBNAME     = 'PQGEMI74'
+PQGEMI75_JOBNAME     = 'PQGEMI75'
+PQGEMI76_JOBNAME     = 'PQGEMI76'
+PQGEMI77_DOM_JOBNAME = 'PQGEMI77_DOM'
+PQGEMI77_INT_JOBNAME = 'PQGEMI77_INT'
+PQGEMI78_JOBNAME     = 'PQGEMI78'
+PQGEMI10_JOBNAME     = 'PQGEMI10'
+PQGEMK38_JOBNAME     = 'PQGEMK38'
+
+PQGEMI72_SCRIPT_NAME     = 'scripts/PQGEMI72_aws.sh'
+PQGEMI73_SCRIPT_NAME     = 'scripts/PQGEMI73_aws.sh'
+PQGEMI74_SCRIPT_NAME     = 'scripts/PQGEMI74_aws.sh'
+PQGEMI75_SCRIPT_NAME     = 'scripts/PQGEMI75_aws.sh'
+PQGEMI76_SCRIPT_NAME     = 'scripts/PQGEMI76_aws.sh'
+PQGEMI77_DOM_SCRIPT_NAME = 'scripts/PQGEMI77_DOM_aws.sh'
+PQGEMI77_INT_SCRIPT_NAME = 'scripts/PQGEMI77_INT_aws.sh'
+PQGEMI77_SCRIPT_NAME     = 'scripts/PQGEMI77_aws.sh'
+PQGEMI78_SCRIPT_NAME     = 'scripts/PQGEMI78_aws.sh'
+PQGEMI10_SCRIPT_NAME     = 'scripts/PQGEMI10_aws.sh'
+PQGEMK38_SCRIPT_NAME     = 'scripts/PQGEMK38_aws.sh'
+
+PQGEMI73_cp2s3_SCRIPT_NAME = 'scripts/PQGEMI73_cp2s3_aws.sh'
+PQGEMI74_cp2s3_SCRIPT_NAME = 'scripts/PQGEMI74_cp2s3_aws.sh'
+PQGEMI75_cp2s3_SCRIPT_NAME = 'scripts/PQGEMI75_cp2s3_aws.sh'
+PQGEMI76_cp2s3_SCRIPT_NAME = 'scripts/PQGEMI76_cp2s3_aws.sh'
+PQGEMI77_DOM_cp2s3_SCRIPT_NAME = 'scripts/PQGEMI77_DOM_cp2s3_aws.sh'
+PQGEMI77_INT_cp2s3_SCRIPT_NAME = 'scripts/PQGEMI77_INT_cp2s3_aws.sh'
+PQGEMI78_cp2s3_SCRIPT_NAME = 'scripts/PQGEMI78_cp2s3_aws.sh'
+
+
+ODATE = "{{ next_ds_nodash }}"
+
+# DAG Instantiation
+with DAG(
+    tags = ['PQGEMI72','PQGEMI73','PQGEMI74','PQGEMI75','PQGEMI76', 'PQGEMI77', 'PQGEMI78', 'PQGEMI10'],
+    dag_id = dag_id, 
+    description='A workflow that kicks off Class partitioning',
+    default_args = default_args,
+    user_defined_macros={
+    "compute_informix_date": compute_informix_date,
+    "compute_day_of_week": compute_day_of_week,
+    },
+    schedule_interval= schedule_interval, # The cron syntax that defines the schedule of the dag
+    catchup  = catchup,
+    concurrency = concurrency,
+    sla_miss_callback = sla_miss,
+) as dag:
+
+    CP_TIME_SENSOR = DateTimeSensor(
+      task_id="CP_TIME_SENSOR",
+      dag = dag,
+      depends_on_past=False,
+      target_time="{{ next_execution_date.in_timezone('America/Chicago').replace(hour=16,minute=00) }}"
+    )
+
+    ets_PQGEMI27 = ExternalTaskSensor(
+      task_id='ets_PQGEMI27',
+      external_dag_id='dre_PQGEMI27',
+      external_task_id='PQGEMI49',
+      allowed_states=['success'],
+      failed_states=['failed']
+    )
+
+    ets_PQGEMD08 = ExternalTaskSensor(
+      task_id='ets_PQGEMD08',
+      external_dag_id='dre_PQGEMD08',
+      external_task_id='PQGEMD08',
+      allowed_states=['success'],
+      failed_states=['failed']
+    )
+
+    bucket_name = cgx_bucket_name
+    bucket_path = cgx_bucket_path
+    file_name   = 'AdjustmentElasticity.'
+    file_format = '.csv'
+    bucket_key = bucket_name + bucket_path + file_name + ODATE + file_format
+  
+    S3_Sensor_ADJ_ELASTICITY = S3KeySensor(
+      task_id       = "S3_Sensor_ADJ_ELASTICITY",
+      bucket_name   = None,
+      bucket_key    = bucket_key,
+      aws_conn_id   = 'cgx_s3_conn',
+      retries       = 0,
+      poke_interval = poke_interval,
+      timeout       = timeout
+    )
+
+    #PQGEMI72
+    PQGEMI72_clean_start = AwsBatchOperator(
+      task_id='PQGEMI72_clean_start',
+      job_name='PQGEMI72_clean_start',
+      job_definition=job_definition,
+      job_queue=job_queue,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+            overrides={'command': ["/bin/bash", "/root/awsjobs/CleanTempDirs.sh", PQGEMI72_JOBNAME, f"{ODATE}"]},
+      retries=2,
+    )
+
+    PQGEMI72 = AwsBatchOperator(
+      task_id=PQGEMI72_JOBNAME,
+      job_name=PQGEMI72_JOBNAME,
+      job_definition=job_definition,
+      job_queue=job_queue,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+      array_properties={
+          "size": int(NODES)
+     },
+      overrides={'command': ["/bin/bash", "/root/awsjobs/RUN_FROM_S3.sh", PQGEMI72_SCRIPT_NAME, PQGEMI72_JOBNAME, ODATE, NODES, Environment]},
+      #overrides={'command': ["/bin/bash", f"/root/awsjobs/{PQGEMI72_JOBNAME}_aws.sh", PQGEMI72_JOBNAME, "{{ next_ds_nodash }}", NODES, Environment]},
+      retries=0,
+    )
+
+    PQGEMI72_clean_end = AwsBatchOperator(
+      task_id='PQGEMI72_clean_end',
+      job_name='PQGEMI72_clean_end',
+      job_definition=job_definition,
+      job_queue=job_queue,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+      overrides={'command': ["/bin/bash", "/root/awsjobs/CleanTempDirs.sh", PQGEMI72_JOBNAME, f"{ODATE}"]},
+      retries=2,
+    )
+
+    PQGEMI72_Success = PythonOperator(
+      task_id='PQGEMI72_Success',
+      on_success_callback=None,
+      depends_on_past=False,
+      python_callable=on_success_callback_dag,
+      provide_context=True,
+      op_kwargs={'job': PQGEMI72_JOBNAME, 'odate': f'{ODATE}'},
+    )
+
+
+    ets_PQGEMD48 = ExternalTaskSensor(
+      task_id='ets_PQGEMD48',
+      external_dag_id='dre_PQGEMD48',
+      external_task_id='PQGEMD48',
+      allowed_states=['success'],
+      failed_states=['failed']
+    )
+
+    ets_PQGEMI71 = ExternalTaskSensor(
+      task_id='ets_PQGEMI71',
+      external_dag_id='dre_PQGEMI71',
+      external_task_id='PQGEMI71',
+      allowed_states=['success'],
+      failed_states=['failed'],
+      mode='reschedule',
+    )
+
+    ets_PQGEMD47_PAX = ExternalTaskSensor(
+      task_id='ets_PQGEMD47_PAX',
+      external_dag_id='dre_LAC',
+      external_task_id='PQGEMD47_pax_cp2s3',
+      allowed_states=['success'],
+      failed_states=['failed'],
+      mode='reschedule',
+    )
+
+    S3_Sensor_PROD_CPF_PQGEMA12_dom = S3KeySensor(
+      task_id="S3_Sensor_PROD_CPF_PQGEMA12_dom",
+      bucket_name=None,
+      bucket_key = 's3://dre-rms-data-prd/' + \
+        'data/ipv/pqgema12.CPF_dom_hier.' + \
+        '{{ compute_day_of_week( next_ds_nodash ) }}' + \
+        '.ds.md5',
+      poke_interval=poke_interval,
+      timeout=timeout
+    )
+
+    S3_Sensor_PROD_TVF_PQGEMA12_dom = S3KeySensor(
+      task_id="S3_Sensor_PROD_TVF_PQGEMA12_dom",
+      bucket_name=None,
+      bucket_key = 's3://dre-rms-data-prd/' + \
+        'data/ipv/pqgema12.TVF_dom_hier.' + \
+        '{{ compute_day_of_week( next_ds_nodash ) }}' + \
+        '.ds.md5',
+      poke_interval=poke_interval,
+      timeout=timeout
+    )
+
+    S3_Sensor_PROD_CPF_PQGEMA12_intl = S3KeySensor(
+      task_id="S3_Sensor_PROD_CPF_PQGEMA12_intl",
+      bucket_name=None,
+      bucket_key = 's3://dre-rms-data-prd/' + \
+        'data/ipv/pqgema12.CPF_intl_hier.' + \
+        '{{ compute_day_of_week( next_ds_nodash ) }}' + \
+        '.ds.md5',
+      poke_interval=poke_interval,
+      timeout=timeout
+    )
+
+    S3_Sensor_PROD_TVF_PQGEMA12_intl = S3KeySensor(
+      task_id="S3_Sensor_PROD_TVF_PQGEMA12_intl",
+      bucket_name=None,
+      bucket_key = 's3://dre-rms-data-prd/' + \
+        'data/ipv/pqgema12.TVF_intl_hier.' + \
+        '{{ compute_day_of_week( next_ds_nodash ) }}' + \
+        '.ds.md5',
+      poke_interval=poke_interval,
+      timeout=timeout
+    )
+
+    ets_PQGEMR40 = ExternalTaskSensor(
+      task_id='ets_PQGEMR40',
+      external_dag_id='dre_CPF',
+      external_task_id='PQGEMR40',
+      allowed_states=['success'],
+      failed_states=['failed'],
+      mode='reschedule',
+    )
+
+
+    #PQGEMI73
+    PQGEMI73_clean_start = AwsBatchOperator(
+      task_id='PQGEMI73_clean_start',
+      job_name='PQGEMI73_clean_start',
+      job_definition=job_definition,
+      job_queue=job_queue,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+            overrides={'command': ["/bin/bash", "/root/awsjobs/CleanTempDirs.sh", PQGEMI73_JOBNAME, f"{ODATE}"]},
+      retries=2,
+    )
+
+    PQGEMI73 = AwsBatchOperator(
+      task_id=PQGEMI73_JOBNAME,
+      job_name=PQGEMI73_JOBNAME,
+      job_definition=job_definition,
+      job_queue=job_queue,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+      array_properties={
+          "size": int(NODES)
+      },
+      overrides={'command': ["/bin/bash", "/root/awsjobs/RUN_FROM_S3.sh", PQGEMI73_SCRIPT_NAME, PQGEMI73_JOBNAME, ODATE, NODES, Environment]},
+      #overrides={'command': ["/bin/bash", f"/root/awsjobs/{PQGEMI73_JOBNAME}_aws.sh", PQGEMI73_JOBNAME, "{{ next_ds_nodash }}", NODES, Environment]},
+      retries=0,
+    )
+
+    PQGEMI73_cp2s3 = AwsBatchOperator(
+      task_id="PQGEMI73_cp2s3",
+      job_name='PQGEMI73_cp2s3',
+      job_definition=job_definition,
+      job_queue=job_queue,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+      array_properties={
+          "size": int(NODES)
+        },
+      overrides={'command': ["/bin/bash", "/root/awsjobs/RUN_FROM_S3.sh", PQGEMI73_cp2s3_SCRIPT_NAME, PQGEMI73_JOBNAME, ODATE, NODES, Environment]},
+      #overrides={'command': ["/bin/bash", f"/root/awsjobs/{PQGEMI73_JOBNAME}_cp2s3_aws.sh", PQGEMI73_JOBNAME, "{{ next_ds_nodash }}", NODES, Environment]},
+      retries=2,
+    )
+
+    PQGEMI73_clean_end = AwsBatchOperator(
+      task_id='PQGEMI73_clean_end',
+      job_name='PQGEMI73_clean_end',
+      job_definition=job_definition,
+      job_queue=job_queue,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+      overrides={'command': ["/bin/bash", "/root/awsjobs/CleanTempDirs.sh", PQGEMI73_JOBNAME, f"{ODATE}"]},
+      retries=2,
+    )
+
+    PQGEMI73_Success = PythonOperator(
+      task_id='PQGEMI73_Success',
+      on_success_callback=None,
+      depends_on_past=False,
+      python_callable=on_success_callback_dag,
+      provide_context=True,
+      op_kwargs={'job': PQGEMI73_JOBNAME, 'odate': f'{ODATE}'},
+    )
+
+
+    #PQGEMI74
+    PQGEMI74_clean_start = AwsBatchOperator(
+      task_id='PQGEMI74_clean_start',
+      job_name='PQGEMI74_clean_start',
+      job_definition=job_definition,
+      job_queue=job_queue,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+            overrides={'command': ["/bin/bash", "/root/awsjobs/CleanTempDirs.sh", PQGEMI74_JOBNAME, f"{ODATE}"]},
+      retries=2,
+    )
+
+    PQGEMI74 = AwsBatchOperator(
+      task_id=PQGEMI74_JOBNAME,
+      job_name=PQGEMI74_JOBNAME,
+      job_definition=job_definition,
+      job_queue=job_queue,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+      array_properties={
+          "size": int(NODES)
+      },
+      overrides={'command': ["/bin/bash", "/root/awsjobs/RUN_FROM_S3.sh", PQGEMI74_SCRIPT_NAME, PQGEMI74_JOBNAME, ODATE, NODES, Environment]},
+      #overrides={'command': ["/bin/bash", f"/root/awsjobs/{PQGEMI74_JOBNAME}_aws.sh", PQGEMI74_JOBNAME, "{{ next_ds_nodash }}", NODES, Environment]},
+      retries=0,
+    )
+
+    PQGEMI74_cp2s3 = AwsBatchOperator(
+      task_id="PQGEMI74_cp2s3",
+      job_name='PQGEMI74_cp2s3',
+      job_definition=job_definition,
+      job_queue=job_queue,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+      array_properties={
+          "size": int(NODES)
+        },
+      overrides={'command': ["/bin/bash", "/root/awsjobs/RUN_FROM_S3.sh", PQGEMI74_cp2s3_SCRIPT_NAME, PQGEMI74_JOBNAME, ODATE, NODES, Environment]},
+      #overrides={'command': ["/bin/bash", f"/root/awsjobs/{PQGEMI74_JOBNAME}_cp2s3_aws.sh", PQGEMI74_JOBNAME, "{{ next_ds_nodash }}", NODES, Environment]},
+      retries=2,
+    )
+
+    PQGEMI74_clean_end = AwsBatchOperator(
+      task_id='PQGEMI74_clean_end',
+      job_name='PQGEMI74_clean_end',
+      job_definition=job_definition,
+      job_queue=job_queue,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+      overrides={'command': ["/bin/bash", "/root/awsjobs/CleanTempDirs.sh", PQGEMI74_JOBNAME, f"{ODATE}"]},
+      retries=2,
+    )
+
+    PQGEMI74_Success = PythonOperator(
+      task_id='PQGEMI74_Success',
+      on_success_callback=None,
+      depends_on_past=False,
+      python_callable=on_success_callback_dag,
+      provide_context=True,
+      op_kwargs={'job': PQGEMI74_JOBNAME, 'odate': f'{ODATE}'},
+    )
+
+
+    #PQGEMI75
+    PQGEMI75_clean_start = AwsBatchOperator(
+      task_id='PQGEMI75_clean_start',
+      job_name='PQGEMI75_clean_start',
+      job_definition=job_definition,
+      job_queue=job_queue,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+            overrides={'command': ["/bin/bash", "/root/awsjobs/CleanTempDirs.sh", PQGEMI75_JOBNAME, f"{ODATE}"]},
+      retries=2,
+    )
+
+    PQGEMI75 = AwsBatchOperator(
+      task_id=PQGEMI75_JOBNAME,
+      job_name=PQGEMI75_JOBNAME,
+      job_definition=job_definition_RI,
+      job_queue=job_queue_RI,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+      array_properties={
+          "size": int(NODES)
+      },
+      overrides={'command': ["/bin/bash", "/root/awsjobs/RUN_FROM_S3.sh", PQGEMI75_SCRIPT_NAME, PQGEMI75_JOBNAME, ODATE, NODES, Environment]},
+      #overrides={'command': ["/bin/bash", f"/root/awsjobs/{PQGEMI75_JOBNAME}_aws.sh", PQGEMI75_JOBNAME, "{{ next_ds_nodash }}", NODES, Environment]},
+      retries=0,
+    )
+
+    PQGEMI75_cp2s3 = AwsBatchOperator(
+      task_id="PQGEMI75_cp2s3",
+      job_name='PQGEMI75_cp2s3',
+      job_definition=job_definition,
+      job_queue=job_queue,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+      array_properties={
+          "size": int(NODES)
+        },
+      overrides={'command': ["/bin/bash", "/root/awsjobs/RUN_FROM_S3.sh", PQGEMI75_cp2s3_SCRIPT_NAME, PQGEMI75_JOBNAME, ODATE, NODES, Environment]},
+      #overrides={'command': ["/bin/bash", f"/root/awsjobs/{PQGEMI75_JOBNAME}_cp2s3_aws.sh", PQGEMI75_JOBNAME, "{{ next_ds_nodash }}", NODES, Environment]},
+      retries=2,
+    )
+
+    PQGEMI75_clean_end = AwsBatchOperator(
+      task_id='PQGEMI75_clean_end',
+      job_name='PQGEMI75_clean_end',
+      job_definition=job_definition,
+      job_queue=job_queue,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+      overrides={'command': ["/bin/bash", "/root/awsjobs/CleanTempDirs.sh", PQGEMI75_JOBNAME, f"{ODATE}"]},
+      retries=2,
+    )
+
+    PQGEMI75_Success = PythonOperator(
+      task_id='PQGEMI75_Success',
+      on_success_callback=None,
+      depends_on_past=False,
+      python_callable=on_success_callback_dag,
+      provide_context=True,
+      op_kwargs={'job': PQGEMI75_JOBNAME, 'odate': f'{ODATE}'},
+    )
+
+
+    #PQGEMI76
+    PQGEMI76_clean_start = AwsBatchOperator(
+      task_id='PQGEMI76_clean_start',
+      job_name='PQGEMI76_clean_start',
+      job_definition=job_definition,
+      job_queue=job_queue,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+            overrides={'command': ["/bin/bash", "/root/awsjobs/CleanTempDirs.sh", PQGEMI76_JOBNAME, f"{ODATE}"]},
+      retries=2,
+    )
+
+    PQGEMI76 = AwsBatchOperator(
+      task_id=PQGEMI76_JOBNAME,
+      job_name=PQGEMI76_JOBNAME,
+      job_definition=job_definition_RI,
+      job_queue=job_queue_RI,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+      array_properties={
+          "size": int(NODES)
+      },
+      overrides={'command': ["/bin/bash", "/root/awsjobs/RUN_FROM_S3.sh", PQGEMI76_SCRIPT_NAME, PQGEMI76_JOBNAME, ODATE, NODES, Environment]},
+      #overrides={'command': ["/bin/bash", f"/root/awsjobs/{PQGEMI76_JOBNAME}_aws.sh", PQGEMI76_JOBNAME, "{{ next_ds_nodash }}", NODES, Environment]},
+      retries=0,
+    )
+
+    PQGEMI76_cp2s3 = AwsBatchOperator(
+      task_id="PQGEMI76_cp2s3",
+      job_name='PQGEMI76_cp2s3',
+      job_definition=job_definition,
+      job_queue=job_queue,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+      array_properties={
+          "size": int(NODES)
+        },
+      overrides={'command': ["/bin/bash", "/root/awsjobs/RUN_FROM_S3.sh", PQGEMI76_cp2s3_SCRIPT_NAME, PQGEMI76_JOBNAME, ODATE, NODES, Environment]},
+      #overrides={'command': ["/bin/bash", f"/root/awsjobs/{PQGEMI76_JOBNAME}_cp2s3_aws.sh", PQGEMI76_JOBNAME, "{{ next_ds_nodash }}", NODES, Environment]},
+      retries=2,
+    )
+
+    PQGEMI76_clean_end = AwsBatchOperator(
+      task_id='PQGEMI76_clean_end',
+      job_name='PQGEMI76_clean_end',
+      job_definition=job_definition,
+      job_queue=job_queue,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+      overrides={'command': ["/bin/bash", "/root/awsjobs/CleanTempDirs.sh", PQGEMI76_JOBNAME, f"{ODATE}"]},
+      retries=2,
+    )
+
+    PQGEMI76_Success = PythonOperator(
+      task_id='PQGEMI76_Success',
+      on_success_callback=None,
+      depends_on_past=False,
+      python_callable=on_success_callback_dag,
+      provide_context=True,
+      op_kwargs={'job': PQGEMI76_JOBNAME, 'odate': f'{ODATE}'},
+    )
+
+
+    bucket_name = cgx_bucket_name
+    bucket_path = cgx_bucket_path
+    file_name   = 'AdjustmentClassPartitioningRecaptureRate.'
+    file_format = '.csv'
+    bucket_key = bucket_name + bucket_path + file_name + ODATE + file_format
+
+    S3_Sensor_ADJ_CLS_PART_RECAP_RATE = S3KeySensor(
+      task_id       = "S3_Sensor_ADJ_CLS_PART_RECAP_RATE",
+      bucket_name   = None,
+      bucket_key    = bucket_key,
+      aws_conn_id   = 'cgx_s3_conn',
+      retries       = 0,
+      poke_interval = poke_interval,
+      timeout       = timeout
+    )
+
+
+    #PQGEMI77_DOM
+    PQGEMI77_DOM_clean_start = AwsBatchOperator(
+      task_id='PQGEMI77_DOM_clean_start',
+      job_name='PQGEMI77_DOM_clean_start',
+      job_definition=job_definition,
+      job_queue=job_queue,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+            overrides={'command': ["/bin/bash", "/root/awsjobs/CleanTempDirs.sh", PQGEMI77_DOM_JOBNAME, f"{ODATE}"]},
+      retries=2,
+    )
+
+    PQGEMI77_DOM = AwsBatchOperator(
+      task_id=PQGEMI77_DOM_JOBNAME,
+      job_name=PQGEMI77_DOM_JOBNAME,
+      job_definition=job_definition_RI,
+      job_queue=job_queue_RI,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+      array_properties={
+          "size": int(NODES)
+      },
+      #overrides={'command': ["/bin/bash", "/root/awsjobs/RUN_FROM_S3.sh", PQGEMI77_DOM_SCRIPT_NAME, PQGEMI77_DOM_JOBNAME, ODATE, NODES, Environment]},
+      overrides={'command': ["/bin/bash", f"/root/awsjobs/{PQGEMI77_DOM_JOBNAME}_aws.sh", PQGEMI77_DOM_JOBNAME, "{{ next_ds_nodash }}", NODES, Environment]},
+      retries=0,
+    )
+
+    PQGEMI77_DOM_cp2s3 = AwsBatchOperator(
+      task_id="PQGEMI77_DOM_cp2s3",
+      job_name='PQGEMI77_DOM_cp2s3',
+      job_definition=job_definition,
+      job_queue=job_queue,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+      array_properties={
+          "size": int(NODES)
+        },
+      overrides={'command': ["/bin/bash", "/root/awsjobs/RUN_FROM_S3.sh", PQGEMI77_DOM_cp2s3_SCRIPT_NAME, PQGEMI77_DOM_JOBNAME, ODATE, NODES, Environment]},
+      #overrides={'command': ["/bin/bash", f"/root/awsjobs/{PQGEMI77_DOM_JOBNAME}_cp2s3_aws.sh", PQGEMI77_DOM_JOBNAME, "{{ next_ds_nodash }}", NODES, Environment]},
+      retries=2,
+    )
+
+    PQGEMI77_DOM_clean_end = AwsBatchOperator(
+      task_id='PQGEMI77_DOM_clean_end',
+      job_name='PQGEMI77_DOM_clean_end',
+      job_definition=job_definition,
+      job_queue=job_queue,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+      overrides={'command': ["/bin/bash", "/root/awsjobs/CleanTempDirs.sh", PQGEMI77_DOM_JOBNAME, f"{ODATE}"]},
+      retries=2,
+    )
+
+    PQGEMI77_DOM_Success = PythonOperator(
+      task_id='PQGEMI77_DOM_Success',
+      on_success_callback=None,
+      depends_on_past=False,
+      python_callable=on_success_callback_dag,
+      provide_context=True,
+      op_kwargs={'job': PQGEMI77_DOM_JOBNAME, 'odate': f'{ODATE}'},
+    )
+
+
+    #PQGEMI77_INT
+    PQGEMI77_INT_clean_start = AwsBatchOperator(
+      task_id='PQGEMI77_INT_clean_start',
+      job_name='PQGEMI77_INT_clean_start',
+      job_definition=job_definition,
+      job_queue=job_queue,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+            overrides={'command': ["/bin/bash", "/root/awsjobs/CleanTempDirs.sh", PQGEMI77_INT_JOBNAME, f"{ODATE}"]},
+      retries=2,
+    )
+
+    PQGEMI77_INT = AwsBatchOperator(
+      task_id=PQGEMI77_INT_JOBNAME,
+      job_name=PQGEMI77_INT_JOBNAME,
+      job_definition=job_definition_RI,
+      job_queue=job_queue_RI,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+      array_properties={
+          "size": int(NODES)
+      },
+      #overrides={'command': ["/bin/bash", "/root/awsjobs/RUN_FROM_S3.sh", PQGEMI77_INT_SCRIPT_NAME, PQGEMI77_INT_JOBNAME, ODATE, NODES, Environment]},
+      overrides={'command': ["/bin/bash", f"/root/awsjobs/{PQGEMI77_INT_JOBNAME}_aws.sh", PQGEMI77_INT_JOBNAME, "{{ next_ds_nodash }}", NODES, Environment]},
+      retries=0,
+    )
+
+    PQGEMI77_INT_cp2s3 = AwsBatchOperator(
+      task_id="PQGEMI77_INT_cp2s3",
+      job_name='PQGEMI77_INT_cp2s3',
+      job_definition=job_definition,
+      job_queue=job_queue,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+      array_properties={
+          "size": int(NODES)
+        },
+      overrides={'command': ["/bin/bash", "/root/awsjobs/RUN_FROM_S3.sh", PQGEMI77_INT_cp2s3_SCRIPT_NAME, PQGEMI77_INT_JOBNAME, ODATE, NODES, Environment]},
+      #overrides={'command': ["/bin/bash", f"/root/awsjobs/{PQGEMI77_INT_JOBNAME}_cp2s3_aws.sh", PQGEMI77_INT_JOBNAME, "{{ next_ds_nodash }}", NODES, Environment]},
+      retries=2,
+    )
+
+    PQGEMI77_INT_clean_end = AwsBatchOperator(
+      task_id='PQGEMI77_INT_clean_end',
+      job_name='PQGEMI77_INT_clean_end',
+      job_definition=job_definition,
+      job_queue=job_queue,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+      overrides={'command': ["/bin/bash", "/root/awsjobs/CleanTempDirs.sh", PQGEMI77_INT_JOBNAME, f"{ODATE}"]},
+      retries=2,
+    )
+
+    PQGEMI77_INT_Success = PythonOperator(
+      task_id='PQGEMI77_INT_Success',
+      on_success_callback=None,
+      depends_on_past=False,
+      python_callable=on_success_callback_dag,
+      provide_context=True,
+      op_kwargs={'job': PQGEMI77_INT_JOBNAME, 'odate': f'{ODATE}'},
+    )
+
+
+    bucket_name = cgx_bucket_name
+    bucket_path = cgx_bucket_path
+    file_name   = 'RCFDemandAdjustmentExclusion.'
+    file_format = '.csv'
+    bucket_key = bucket_name + bucket_path + file_name + ODATE + file_format
+
+    S3_Sensor_RCFDemandAdjustExclusion = S3KeySensor(
+      task_id       = "S3_Sensor_RCFDemandAdjustExclusion",
+      bucket_name   = None,
+      bucket_key    = bucket_key,
+      aws_conn_id   = 'cgx_s3_conn',
+      retries       = 0,
+      poke_interval = poke_interval,
+      timeout       = timeout
+    )
+
+    #PQGEMI78
+    PQGEMI78_clean_start = AwsBatchOperator(
+      task_id='PQGEMI78_clean_start',
+      job_name='PQGEMI78_clean_start',
+      job_definition=job_definition,
+      job_queue=job_queue,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+            overrides={'command': ["/bin/bash", "/root/awsjobs/CleanTempDirs.sh", PQGEMI78_JOBNAME, f"{ODATE}"]},
+      retries=2,
+    )
+
+    PQGEMI78 = AwsBatchOperator(
+      task_id=PQGEMI78_JOBNAME,
+      job_name=PQGEMI78_JOBNAME,
+      job_definition=job_definition_RI,
+      job_queue=job_queue_RI,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+      array_properties={
+          "size": int(NODES)
+      },
+      overrides={'command': ["/bin/bash", "/root/awsjobs/RUN_FROM_S3.sh", PQGEMI78_SCRIPT_NAME, PQGEMI78_JOBNAME, ODATE, NODES, Environment]},
+      #overrides={'command': ["/bin/bash", f"/root/awsjobs/{PQGEMI78_JOBNAME}_aws.sh", PQGEMI78_JOBNAME, "{{ next_ds_nodash }}", NODES, Environment]},
+      retries=0,
+    )
+
+    PQGEMI78_cp2s3 = AwsBatchOperator(
+      task_id="PQGEMI78_cp2s3",
+      job_name='PQGEMI78_cp2s3',
+      job_definition=job_definition,
+      job_queue=job_queue,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+      array_properties={
+          "size": int(NODES)
+        },
+      overrides={'command': ["/bin/bash", "/root/awsjobs/RUN_FROM_S3.sh", PQGEMI78_cp2s3_SCRIPT_NAME, PQGEMI78_JOBNAME, ODATE, NODES, Environment]},
+      #overrides={'command': ["/bin/bash", f"/root/awsjobs/{PQGEMI78_JOBNAME}_cp2s3_aws.sh", PQGEMI78_JOBNAME, "{{ next_ds_nodash }}", NODES, Environment]},
+      retries=2,
+    )
+
+    PQGEMI78_clean_end = AwsBatchOperator(
+      task_id='PQGEMI78_clean_end',
+      job_name='PQGEMI78_clean_end',
+      job_definition=job_definition,
+      job_queue=job_queue,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+      overrides={'command': ["/bin/bash", "/root/awsjobs/CleanTempDirs.sh", PQGEMI78_JOBNAME, f"{ODATE}"]},
+      retries=2,
+    )
+
+    PQGEMI78_Success = PythonOperator(
+      task_id='PQGEMI78_Success',
+      on_success_callback=None,
+      depends_on_past=False,
+      python_callable=on_success_callback_dag,
+      provide_context=True,
+      op_kwargs={'job': PQGEMI78_JOBNAME, 'odate': f'{ODATE}'},
+    )
+
+
+    #PQGEMI10
+    PQGEMI10_clean_start = AwsBatchOperator(
+      task_id='PQGEMI10_clean_start',
+      job_name='PQGEMI10_clean_start',
+      job_definition=job_definition,
+      job_queue=job_queue,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+            overrides={'command': ["/bin/bash", "/root/awsjobs/CleanTempDirs.sh", PQGEMI10_JOBNAME, f"{ODATE}"]},
+      retries=2,
+    )
+
+    PQGEMI10 = AwsBatchOperator(
+      task_id=PQGEMI10_JOBNAME,
+      job_name=PQGEMI10_JOBNAME,
+      job_definition=job_definition,
+      job_queue=job_queue,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+      array_properties={
+          "size": int(NODES)
+      },
+      overrides={'command': ["/bin/bash", "/root/awsjobs/RUN_FROM_S3.sh", PQGEMI10_SCRIPT_NAME, PQGEMI10_JOBNAME, ODATE, NODES, Environment]},
+      #overrides={'command': ["/bin/bash", f"/root/awsjobs/{PQGEMI10_JOBNAME}_aws.sh", PQGEMI10_JOBNAME, "{{ next_ds_nodash }}", NODES, Environment]},
+      retries=0,
+    )
+
+    PQGEMI10_clean_end = AwsBatchOperator(
+      task_id='PQGEMI10_clean_end',
+      job_name='PQGEMI10_clean_end',
+      job_definition=job_definition,
+      job_queue=job_queue,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+      overrides={'command': ["/bin/bash", "/root/awsjobs/CleanTempDirs.sh", PQGEMI10_JOBNAME, f"{ODATE}"]},
+      retries=2,
+    )
+
+    PQGEMI10_Success = PythonOperator(
+      task_id='PQGEMI10_Success',
+      on_success_callback=None,
+      depends_on_past=False,
+      python_callable=on_success_callback_dag,
+      provide_context=True,
+      op_kwargs={'job': PQGEMI10_JOBNAME, 'odate': f'{ODATE}'},
+    )
+
+    ets_PQGEMD55 = ExternalTaskSensor(
+      task_id='ets_PQGEMD55',
+      external_dag_id='dre_FPCF',
+      external_task_id='PQGEMD55',
+      allowed_states=['success'],
+      failed_states=['failed'],
+      mode='reschedule',
+    )
+
+    ets_PQGEMK74 = ExternalTaskSensor(
+      task_id='ets_PQGEMK74',
+      external_dag_id='dre_PQGEMK74',
+      external_task_id='PQGEMK74',
+      allowed_states=['success'],
+      failed_states=['failed'],
+      mode='reschedule',
+    )
+
+
+    #PQGEMK38
+    PQGEMK38_clean_start = AwsBatchOperator(
+      task_id='PQGEMK38_clean_start',
+      job_name='PQGEMK38_clean_start',
+      job_definition=job_definition,
+      job_queue=job_queue,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+            overrides={'command': ["/bin/bash", "/root/awsjobs/CleanTempDirs.sh", PQGEMK38_JOBNAME, f"{ODATE}"]},
+      retries=2,
+    )
+
+    PQGEMK38 = AwsBatchOperator(
+      task_id=PQGEMK38_JOBNAME,
+      job_name=PQGEMK38_JOBNAME,
+      job_definition=job_definition,
+      job_queue=job_queue,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+      array_properties={
+          "size": int(NODES)
+      },
+      overrides={'command': ["/bin/bash", "/root/awsjobs/RUN_FROM_S3.sh", PQGEMK38_SCRIPT_NAME, PQGEMK38_JOBNAME, ODATE, NODES, Environment]},
+      #overrides={'command': ["/bin/bash", f"/root/awsjobs/{PQGEMK38_JOBNAME}_aws.sh", PQGEMK38_JOBNAME, "{{ next_ds_nodash }}", NODES, Environment]},
+      retries=0,
+    )
+
+    PQGEMK38_clean_end = AwsBatchOperator(
+      task_id='PQGEMK38_clean_end',
+      job_name='PQGEMK38_clean_end',
+      job_definition=job_definition,
+      job_queue=job_queue,
+      region_name=region_name,
+      tags={tag_name: tag_value},
+      overrides={'command': ["/bin/bash", "/root/awsjobs/CleanTempDirs.sh", PQGEMK38_JOBNAME, f"{ODATE}"]},
+      retries=2,
+    )
+
+    PQGEMK38_Success = PythonOperator(
+      task_id='PQGEMK38_Success',
+      on_success_callback=None,
+      depends_on_past=False,
+      python_callable=on_success_callback_dag,
+      provide_context=True,
+      op_kwargs={'job': PQGEMI10_JOBNAME, 'odate': f'{ODATE}'},
+    )
+
+
+    CP_Success = DummyOperator(
+      task_id='CP_Success',
+      trigger_rule="all_success",
+    )
+
+    CP_SLA_TIME = DateTimeSensor(
+      task_id="CP_SLA_TIME",
+      dag = dag,
+      depends_on_past=False,
+      target_time="{{ next_execution_date.in_timezone('America/Chicago').replace(hour=20) }}"
+    )
+
+    SLADummy = DummyOperator(
+      task_id='SLADummy',
+      trigger_rule="one_success",
+    )
+
+    SLATask = DummyOperator(
+      task_id='SLATask',
+      trigger_rule="all_done",
+      sla=timedelta(hours=20),
+    )
+
+    with TaskGroup(group_id='Downlines') as dd:
+      with TaskGroup(group_id='Markers') as markers:
+        etm_PQGEMD09 = ExternalTaskMarker(
+          task_id="etm_PQGEMD55",
+          external_dag_id="dre_FPCF",
+          external_task_id="ets_PQGEMI78",
+        )
+
+    CP_TIME_SENSOR >> [ets_PQGEMI27, ets_PQGEMD08, S3_Sensor_ADJ_ELASTICITY] >> PQGEMI72_clean_start >> PQGEMI72 >> PQGEMI72_clean_end >> PQGEMI72_Success
+    CP_TIME_SENSOR >> ets_PQGEMK74 >> PQGEMK38_clean_start >> PQGEMK38 >> PQGEMK38_clean_end >> PQGEMK38_Success
+    CP_TIME_SENSOR >> [ets_PQGEMD48, ets_PQGEMD47_PAX, S3_Sensor_PROD_CPF_PQGEMA12_dom, S3_Sensor_PROD_TVF_PQGEMA12_dom, S3_Sensor_PROD_CPF_PQGEMA12_intl, S3_Sensor_PROD_TVF_PQGEMA12_intl , ets_PQGEMR40] >> ets_PQGEMI71
+
+    [ets_PQGEMI71, PQGEMI72_clean_end, PQGEMK38_clean_end] >> PQGEMI73_clean_start
+
+    PQGEMI73_clean_start >> PQGEMI73 >> [PQGEMI76_clean_start, PQGEMI75_clean_start, PQGEMI74_clean_start]
+
+    PQGEMI74_clean_start >> PQGEMI74
+    PQGEMI75_clean_start >> PQGEMI75
+    PQGEMI76_clean_start >> PQGEMI76
+
+    [PQGEMI74, PQGEMI75, PQGEMI76] >> S3_Sensor_ADJ_CLS_PART_RECAP_RATE
+
+    S3_Sensor_ADJ_CLS_PART_RECAP_RATE >> PQGEMI77_DOM_clean_start >> PQGEMI77_DOM
+    S3_Sensor_ADJ_CLS_PART_RECAP_RATE >> PQGEMI77_INT_clean_start >> PQGEMI77_INT
+    S3_Sensor_ADJ_CLS_PART_RECAP_RATE >> PQGEMI73_cp2s3 >> PQGEMI73_clean_end >> PQGEMI73_Success
+
+    [PQGEMI77_DOM, PQGEMI77_INT] >> S3_Sensor_RCFDemandAdjustExclusion
+    S3_Sensor_RCFDemandAdjustExclusion >> PQGEMI78_clean_start >> PQGEMI78 >> [PQGEMI77_DOM_cp2s3, PQGEMI77_INT_cp2s3, PQGEMI10_clean_start, ets_PQGEMD55]
+    S3_Sensor_RCFDemandAdjustExclusion >> PQGEMI74_cp2s3 >> PQGEMI74_clean_end >> PQGEMI74_Success
+    S3_Sensor_RCFDemandAdjustExclusion >> PQGEMI75_cp2s3 >> PQGEMI75_clean_end >> PQGEMI75_Success
+    S3_Sensor_RCFDemandAdjustExclusion >> PQGEMI76_cp2s3 >> PQGEMI76_clean_end >> PQGEMI76_Success
+
+    PQGEMI77_DOM_cp2s3 >> PQGEMI77_DOM_clean_end >> PQGEMI77_DOM_Success
+    PQGEMI77_INT_cp2s3 >> PQGEMI77_INT_clean_end >> PQGEMI77_INT_Success
+    PQGEMI10_clean_start >> PQGEMI10 >> PQGEMI10_clean_end >> PQGEMI10_Success
+    ets_PQGEMD55 >> PQGEMI78_cp2s3 >> PQGEMI78_clean_end >> PQGEMI78_Success
+
+    PQGEMI78 >> CP_Success
+    PQGEMI78 >> dd
+
+    [CP_Success, CP_SLA_TIME] >> SLADummy
+    [SLADummy,CP_Success] >> SLATask
