@@ -1,218 +1,302 @@
-from datetime import datetime, timedelta
-import csv
-import io
-import statistics
-import boto3
+Abhi tumhare existing dre_dag_dependency_analysis ko hi extend karte hain. Ekdum step-by-step.
 
-from airflow import DAG
-from airflow.operators.python import PythonOperator
+Step 1 - Import add karo
+
+Current imports ke saath:
+
 from airflow.models import TaskInstance, DagBag
-from airflow.utils.session import create_session
-from airflow.utils.state import State
-from airflow.utils import timezone
+
+already hai.
+
+Add:
+
+from collections import defaultdict
 
 
-LOOKBACK_DAYS = 7
+---
 
-S3_BUCKET = "dre-rms-mwaa-rms-stg"
-S3_KEY_PREFIX = "dags2/reports"
+Step 2 - New function add karo
 
+upload_to_s3() ke niche add karo:
 
-def get_task_runtime_hours(dag_id, task_id):
-
-    runtimes = []
-
-    lookback_date = (
-        timezone.utcnow()
-        - timedelta(days=LOOKBACK_DAYS)
-    )
+def get_running_tasks(dag_id):
 
     with create_session() as session:
 
-        task_instances = (
+        return (
             session.query(TaskInstance)
             .filter(
                 TaskInstance.dag_id == dag_id,
-                TaskInstance.task_id == task_id,
-                TaskInstance.state == State.SUCCESS,
-                TaskInstance.start_date >= lookback_date
+                TaskInstance.state == State.RUNNING
             )
             .all()
         )
 
-        for ti in task_instances:
 
-            if ti.duration is not None:
+---
 
-                runtimes.append(
-                    ti.duration / 3600
-                )
+Step 3 - Critical Path Function
 
-    if not runtimes:
-        return 0
+get_running_tasks() ke niche add karo:
 
-    return round(
-        statistics.median(runtimes),
+def get_critical_path_runtime(
+    dag,
+    task,
+    runtime_map
+):
+
+    downstream = list(task.downstream_task_ids)
+
+    if not downstream:
+
+        return runtime_map.get(
+            task.task_id,
+            0
+        )
+
+    child_runtimes = []
+
+    for child_id in downstream:
+
+        child_task = dag.get_task(
+            child_id
+        )
+
+        child_runtime = (
+            get_critical_path_runtime(
+                dag,
+                child_task,
+                runtime_map
+            )
+        )
+
+        child_runtimes.append(
+            child_runtime
+        )
+
+    return (
+        runtime_map.get(
+            task.task_id,
+            0
+        )
+        + max(child_runtimes)
+    )
+
+
+---
+
+Step 4 - analyze_dag() me runtime_map add karo
+
+Find:
+
+root_tasks = []
+end_tasks = []
+
+total_runtime = 0
+
+Replace with:
+
+root_tasks = []
+end_tasks = []
+
+total_runtime = 0
+
+runtime_map = {}
+
+
+---
+
+Step 5 - Loop ke andar add karo
+
+Find:
+
+runtime = get_task_runtime(
+    dag_id,
+    task.task_id
+)
+
+Immediately below:
+
+runtime_map[
+    task.task_id
+] = runtime
+
+
+---
+
+Step 6 - Current Running Tasks
+
+Loop khatam hone ke baad add karo:
+
+running_tasks = get_running_tasks(
+    dag_id
+)
+
+print("=" * 100)
+print("RUNNING TASKS")
+print("=" * 100)
+
+for rt in running_tasks:
+
+    elapsed_hours = (
+        timezone.utcnow()
+        - rt.start_date
+    ).total_seconds() / 3600
+
+    avg_runtime = runtime_map.get(
+        rt.task_id,
+        0
+    )
+
+    remaining_hours = max(
+        avg_runtime - elapsed_hours,
+        0
+    )
+
+    estimated_end = (
+        timezone.utcnow()
+        + timedelta(
+            hours=remaining_hours
+        )
+    )
+
+    print(
+        f"TASK={rt.task_id}"
+    )
+
+    print(
+        f"ELAPSED_HOURS={round(elapsed_hours,2)}"
+    )
+
+    print(
+        f"AVG_RUNTIME_HOURS={avg_runtime}"
+    )
+
+    print(
+        f"REMAINING_HOURS={round(remaining_hours,2)}"
+    )
+
+    print(
+        f"ESTIMATED_END={estimated_end}"
+    )
+
+    print(
+        f"NEXT_TASKS="
+        f"{list(dag.get_task(rt.task_id).downstream_task_ids)}"
+    )
+
+
+---
+
+Step 7 - Critical Path Calculation
+
+Running task section ke baad add karo:
+
+critical_path_hours = 0
+
+for root_task_id in root_tasks:
+
+    root_task = dag.get_task(
+        root_task_id
+    )
+
+    path_runtime = (
+        get_critical_path_runtime(
+            dag,
+            root_task,
+            runtime_map
+        )
+    )
+
+    critical_path_hours = max(
+        critical_path_hours,
+        path_runtime
+    )
+
+
+---
+
+Step 8 - Final ETA
+
+Add:
+
+final_eta = (
+    timezone.utcnow()
+    + timedelta(
+        hours=critical_path_hours
+    )
+)
+
+print("=" * 100)
+print(
+    f"CRITICAL_PATH_HOURS="
+    f"{round(critical_path_hours,2)}"
+)
+
+print(
+    f"FINAL_DAG_ETA="
+    f"{final_eta}"
+)
+print("=" * 100)
+
+
+---
+
+Step 9 - CSV Summary
+
+Current summary ke niche add karo:
+
+writer.writerow([
+    "CRITICAL_PATH_HOURS",
+    round(
+        critical_path_hours,
         2
     )
+])
 
-
-def upload_to_s3(csv_content):
-
-    s3 = boto3.client("s3")
-
-    file_name = (
-        f"task_eta_"
-        f"{timezone.utcnow().strftime('%Y%m%d_%H%M%S')}.csv"
+writer.writerow([
+    "FINAL_DAG_ETA",
+    final_eta.strftime(
+        "%Y-%m-%d %H:%M:%S"
     )
-
-    s3_key = f"{S3_KEY_PREFIX}/{file_name}"
-
-    s3.put_object(
-        Bucket=S3_BUCKET,
-        Key=s3_key,
-        Body=csv_content,
-        ContentType="text/csv"
-    )
-
-    print(
-        f"CSV uploaded to s3://{S3_BUCKET}/{s3_key}"
-    )
+])
 
 
-def calculate_eta(**context):
+---
 
-    dag_run = context.get("dag_run")
+Output kya milega
 
-    dag_id = dag_run.conf.get("dag_id")
+CloudWatch me:
 
-    if not dag_id:
-        raise ValueError(
-            "dag_id is mandatory"
-        )
+RUNNING TASKS
 
-    dag = DagBag().get_dag(dag_id)
+TASK=PQGEMI73
 
-    if not dag:
-        raise ValueError(
-            f"DAG {dag_id} not found"
-        )
+ELAPSED_HOURS=0.40
 
-    csv_buffer = io.StringIO()
-    writer = csv.writer(csv_buffer)
+AVG_RUNTIME_HOURS=0.67
 
-    writer.writerow([
-        "task_id",
-        "median_runtime_hours"
-    ])
+REMAINING_HOURS=0.27
 
-    total_hours = 0
+ESTIMATED_END=2026-06-18 12:35
 
-    business_tasks = []
+NEXT_TASKS=
+['PQGEMI74_clean_start',
+ 'PQGEMI75_clean_start',
+ 'PQGEMI76_clean_start']
 
-    for task in dag.tasks:
+Aur end me:
 
-        task_id = task.task_id
+CRITICAL_PATH_HOURS=8.45
 
-        if (
-            "Sensor" in task_id
-            or "sensor" in task_id
-            or "_clean_start" in task_id
-            or "_clean_end" in task_id
-            or "_Success" in task_id
-            or task_id.startswith("ets_")
-        ):
-            continue
-
-        business_tasks.append(task_id)
-
-    business_tasks = sorted(business_tasks)
-
-    print("=" * 100)
-    print(f"DAG : {dag_id}")
-    print("=" * 100)
-
-    for task_id in business_tasks:
-
-        runtime = get_task_runtime_hours(
-            dag_id,
-            task_id
-        )
-
-        total_hours += runtime
-
-        writer.writerow([
-            task_id,
-            runtime
-        ])
-
-        print(
-            f"TASK={task_id} "
-            f"RUNTIME={runtime} hrs"
-        )
-
-    estimated_completion_time = (
-        timezone.utcnow()
-        + timedelta(hours=total_hours)
-    )
-
-    writer.writerow([])
-    writer.writerow(["SUMMARY"])
-
-    writer.writerow([
-        "DAG_ID",
-        dag_id
-    ])
-
-    writer.writerow([
-        "TOTAL_TASKS",
-        len(business_tasks)
-    ])
-
-    writer.writerow([
-        "TOTAL_RUNTIME_HOURS",
-        round(total_hours, 2)
-    ])
-
-    writer.writerow([
-        "CURRENT_TIME",
-        timezone.utcnow().strftime(
-            "%Y-%m-%d %H:%M:%S"
-        )
-    ])
-
-    writer.writerow([
-        "ESTIMATED_COMPLETION_TIME",
-        estimated_completion_time.strftime(
-            "%Y-%m-%d %H:%M:%S"
-        )
-    ])
-
-    print("=" * 100)
-    print(
-        f"TOTAL_RUNTIME_HOURS = "
-        f"{round(total_hours,2)}"
-    )
-    print(
-        f"ESTIMATED_COMPLETION_TIME = "
-        f"{estimated_completion_time}"
-    )
-    print("=" * 100)
-
-    upload_to_s3(
-        csv_buffer.getvalue()
-    )
+FINAL_DAG_ETA=
+2026-06-18 19:20:00
 
 
-with DAG(
-    dag_id="dre_cp_task_eta_calculator",
-    start_date=datetime(2025, 1, 1),
-    schedule=None,
-    catchup=False,
-    tags=["eta"]
-) as dag:
+---
 
-    eta_task = PythonOperator(
-        task_id="calculate_eta",
-        python_callable=calculate_eta
-    )
+⚠️ Important:
+
+Ye generic DAG solution hai. dre_CP, dre_FPCF, ya kisi bhi DAG par chalega.
+
+Lekin first run me mujhe output dekhna padega, kyunki kuch DAGs me cycles, sensors, ya parallel branches ki wajah se critical path expected se bada ya chhota aa sakta hai. First execution ke logs se hi validate hoga ki manager ki expectation ke kitna close hai.
