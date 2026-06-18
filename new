@@ -1,21 +1,23 @@
-def upload_to_s3(csv_content):
+writer.writerow([])
 
-    s3 = boto3.client("s3")
+writer.writerow(["SUMMARY"])
 
-    file_name = (
-        f"dependency_analysis_"
-        f"{timezone.utcnow().strftime('%Y%m%d_%H%M%S')}.csv"
-    )
+writer.writerow([
+    "TOTAL_TASKS",
+    len(dag.tasks)
+])
 
-    s3_key = f"{S3_KEY_PREFIX}/{file_name}"
+writer.writerow([
+    "ROOT_TASKS",
+    ",".join(root_tasks)
+])
 
-    s3.put_object(
-        Bucket=S3_BUCKET,
-        Key=s3_key,
-        Body=csv_content,
-        ContentType="text/csv"
-    )
+writer.writerow([
+    "END_TASKS",
+    ",".join(end_tasks)
+])
 
-    print(
-        f"CSV uploaded to s3://{S3_BUCKET}/{s3_key}"
-    )
+writer.writerow([
+    "ESTIMATED_FULL_DAG_RUNTIME_HOURS",
+    round(total_runtime, 2)
+])
