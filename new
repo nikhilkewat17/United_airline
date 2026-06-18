@@ -1,0 +1,154 @@
+from datetime import datetime, timedelta
+import statistics
+
+from airflow import DAG
+from airflow.operators.python import PythonOperator
+from airflow.models import TaskInstance, DagBag
+from airflow.utils.session import create_session
+from airflow.utils.state import State
+from airflow.utils import timezone
+
+LOOKBACK_DAYS = 7
+
+
+def get_task_runtime(dag_id, task_id):
+
+    runtimes = []
+
+    lookback_date = (
+        timezone.utcnow()
+        - timedelta(days=LOOKBACK_DAYS)
+    )
+
+    with create_session() as session:
+
+        task_instances = (
+            session.query(TaskInstance)
+            .filter(
+                TaskInstance.dag_id == dag_id,
+                TaskInstance.task_id == task_id,
+                TaskInstance.state == State.SUCCESS,
+                TaskInstance.start_date >= lookback_date
+            )
+            .all()
+        )
+
+        for ti in task_instances:
+
+            if ti.duration:
+
+                runtimes.append(
+                    ti.duration / 3600
+                )
+
+    if not runtimes:
+        return 0
+
+    return round(
+        statistics.median(runtimes),
+        2
+    )
+
+
+def analyze_dag(**context):
+
+    dag_run = context.get("dag_run")
+
+    dag_id = dag_run.conf.get("dag_id")
+
+    if not dag_id:
+        raise ValueError(
+            "dag_id is mandatory"
+        )
+
+    dag = DagBag().get_dag(dag_id)
+
+    if not dag:
+        raise ValueError(
+            f"DAG {dag_id} not found"
+        )
+
+    print("=" * 100)
+    print(f"DAG ANALYSIS : {dag_id}")
+    print("=" * 100)
+
+    root_tasks = []
+    end_tasks = []
+
+    total_runtime = 0
+
+    for task in dag.tasks:
+
+        runtime = get_task_runtime(
+            dag_id,
+            task.task_id
+        )
+
+        total_runtime += runtime
+
+        upstream = list(
+            task.upstream_task_ids
+        )
+
+        downstream = list(
+            task.downstream_task_ids
+        )
+
+        if not upstream:
+            root_tasks.append(
+                task.task_id
+            )
+
+        if not downstream:
+            end_tasks.append(
+                task.task_id
+            )
+
+        print("-" * 80)
+
+        print(
+            f"TASK ID : {task.task_id}"
+        )
+
+        print(
+            f"UPSTREAM : {upstream}"
+        )
+
+        print(
+            f"DOWNSTREAM : {downstream}"
+        )
+
+        print(
+            f"MEDIAN_RUNTIME_HOURS : {runtime}"
+        )
+
+    print("=" * 100)
+
+    print(
+        f"ROOT TASKS : {root_tasks}"
+    )
+
+    print(
+        f"END TASKS : {end_tasks}"
+    )
+
+    print(
+        f"ESTIMATED_FULL_DAG_RUNTIME_HOURS : "
+        f"{round(total_runtime,2)}"
+    )
+
+    print("=" * 100)
+
+
+with DAG(
+    dag_id="dre_dag_dependency_analysis",
+    start_date=datetime(2025, 1, 1),
+    schedule=None,
+    catchup=False,
+    tags=["analysis", "eta"]
+) as dag:
+
+    analyze_task = PythonOperator(
+        task_id="analyze_dag",
+        python_callable=analyze_dag
+    )
