@@ -242,35 +242,6 @@ def analyze_dag(**context):
             f"{list(dag.get_task(rt.task_id).downstream_task_ids)}"
         )
         
-        writer.writerow([
-            "ELAPSED_HOURS",
-            round(elapsed_hours, 2)
-        ])
-
-        writer.writerow([
-            "AVG_RUNTIME_HOURS",
-            avg_runtime_minutes
-        ])
-        writer.writerow([
-            "REMAINING_HOURS",
-            round(remaining_minutes, 2)
-        ])
-
-        writer.writerow([
-            "ESTIMATED_END",
-            estimated_end.strftime("%Y-%m-%d %H:%M:%S")
-        ])
-
-        writer.writerow([
-            "NEXT_TASKS",
-            ",".join(
-                list(
-                    dag.get_task(
-                        rt.task_id
-                    ).downstream_task_ids
-                )
-            )
-        ])
         
         
 
@@ -303,32 +274,6 @@ def analyze_dag(**context):
         f"{round(critical_path_minutes, 2)}"
     )
     
-    current_time = timezone.utcnow()
-    writer.writerow([
-        "CURRENT_RUNNING_TASK",
-        running_tasks[0].task_id if running_tasks else "None"
-    ])
-    
-    writer.writerow([
-        "TARGET_TASK",
-        end_tasks[0] if end_tasks else "None"
-    ])
-    
-    writer.writerow([
-        "TOTAL_REMAINING_MINUTES",
-        round(critical_path_minutes, 2)
-    ])
-    
-    writer.writerow([
-        "CURRENT_UTC_TIME",
-        current_time.strftime("%Y-%m-%d %H:%M:%S")
-    ])
-    
-    writer.writerow([
-        "ESTIMATED_COMPLETION_TIME",
-        final_eta.strftime("%Y-%m-%d %H:%M:%S")
-    ])
-
     print(
         f"FINAL_DAG_ETA="
         f"{final_eta}"
@@ -344,8 +289,6 @@ def analyze_dag(**context):
         f"{round(total_runtime, 2)}"
     )
 
-    # CSV Summary
-    writer.writerow([])
 
     print("=" * 100)
 
