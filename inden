@@ -161,7 +161,7 @@ def analyze_dag(**context):
     writer.writerow([
         "dag_id",
         "task_id",
-        "average_runtime_minutes"
+        "median_runtime_minutes"
     ])
 
     root_tasks = []
@@ -195,12 +195,9 @@ def analyze_dag(**context):
         print(f"MEDIAN_RUNTIME_HOURS : {runtime}")
 
         writer.writerow([
+            dag_id,
             task.task_id,
-            runtime,
-            ",".join(upstream),
-            ",".join(downstream),
-            len(upstream),
-            len(downstream)
+            runtime
         ])
 
     # Running tasks analysis
@@ -244,11 +241,7 @@ def analyze_dag(**context):
             f"NEXT_TASKS="
             f"{list(dag.get_task(rt.task_id).downstream_task_ids)}"
         )
-        writer.writerow([])
-        writer.writerow([
-            "CURRENT_RUNNING_TASK",
-            rt.task_id
-        ])
+        
         writer.writerow([
             "ELAPSED_HOURS",
             round(elapsed_hours, 2)
@@ -353,37 +346,6 @@ def analyze_dag(**context):
 
     # CSV Summary
     writer.writerow([])
-    writer.writerow(["SUMMARY"])
-
-    writer.writerow([
-        "TOTAL_TASKS",
-        len(dag.tasks)
-    ])
-
-    writer.writerow([
-        "ROOT_TASKS",
-        ",".join(root_tasks)
-    ])
-
-    writer.writerow([
-        "END_TASKS",
-        ",".join(end_tasks)
-    ])
-
-    writer.writerow([
-        "ESTIMATED_FULL_DAG_RUNTIME_MINUTES",
-        round(total_runtime, 2)
-    ])
-
-    writer.writerow([
-        "CRITICAL_PATH_MINUTES",
-        round(critical_path_minutes, 2)
-    ])
-
-    writer.writerow([
-        "FINAL_DAG_ETA",
-        final_eta.strftime("%d-%b-%Y %H:%M:%S")
-    ])
 
     print("=" * 100)
 
