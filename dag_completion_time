@@ -45,18 +45,17 @@ def get_task_runtime(dag_id, task_id):
                 runtimes.append(
                     ti.duration / 3600
                 )       
-        print(
-            f"TASK={task_id} | "
-            f"RUN_COUNT={len(runtimes)} | "
-            f"RUNTIMES={runtimes}"
-        )
+#        print(
+#            f"TASK={task_id} | "
+#            f"MEDIAN_RUNTIME_HOURS={round(statistics.median(runtimes),2)}"
+#       )
 
     if not runtimes:
         return 0
 
     return round(
         statistics.median(runtimes),
-        2
+        3
     )
 
 def upload_to_s3(csv_content):
@@ -142,9 +141,11 @@ def get_critical_path_runtime(
 
 def analyze_dag(**context):
     
+    dag_run = context.get("dag_run")
+    
     dag_ids_string = (
-        context["params"]
-        .get("dag_ids")
+        dag_run.conf.get("dag_ids") 
+        or context["params"].get("dag_ids")
     )
     dag_ids = [
         x.strip().lower()
@@ -152,7 +153,7 @@ def analyze_dag(**context):
         if x.strip()
     ]
     
-    if not dag_ids:
+    if not dag_ids_string:
         raise ValueError("Please provide DAG IDs")
     
     csv_buffer = io.StringIO()
@@ -166,13 +167,13 @@ def analyze_dag(**context):
     
     for dag_id in dag_ids:
         
-        dagbug = DagBag()
+        dagbag = DagBag()
         
         dag = None
         
-        for actual_dag_id in dagbug.dags.keys():
+        for actual_dag_id in dagbag.dags.keys():
             if actual_dag_id.lower() == dag_id.lower():
-                dag = dagbug.get_dag(
+                dag = dagbag.get_dag(
                     actual_dag_id
                 )
                 dag_id = actual_dag_id
@@ -189,6 +190,7 @@ def analyze_dag(**context):
         
         print("=" * 120)
         print(f"DAG ANALYSIS : {dag_id}")
+        print()
         print("=" * 120)
         
         print(
@@ -230,16 +232,21 @@ def analyze_dag(**context):
             runtime
             ])
             
-# Running tasks analysis          
+#======================================
+        #  RUNNING TASK
+# ==================================
+                
         print("=" * 120)
         print("RUNNING TASKS")
         print("=" * 120)
 
         running_tasks = get_running_tasks(dag_id)
+        
+        print(f"RUNNING_TASKS_COUNT={len(running_tasks)}")
 
         for rt in running_tasks:
+            print(rt.task_id)
             
-        
             if not rt.start_date:
                 continue
 
@@ -271,13 +278,15 @@ def analyze_dag(**context):
             path_runtime = get_critical_path_runtime(dag,root_task,runtime_map)
 
             critical_path_hours = max(critical_path_hours,path_runtime)
+            
+            total_tasks = len(dag.tasks)
 
         final_eta = (timezone.utcnow()+ timedelta(hours=critical_path_hours))
 
         print("=" * 120)
         print(
-                f"CRITICAL_PATH_HOURS="
-                f"{round(critical_path_hours, 2)}"
+                f"TOTAL_TASKS="
+                f"{total_tasks}"
                 )
         print(
                 f"ESTIMATED_FULL_DAG_RUNTIME_HOURS : "
@@ -300,6 +309,8 @@ def analyze_dag(**context):
         writer.writerow(["ESTIMATED_FULL_DAG_RUNTIME_HOURS",round(total_runtime, 2)])
     
         writer.writerow(["FINAL_DAG_ETA",final_eta.strftime("%Y-%m-%d %H:%M:%S")])
+        
+        writer.writerow([])
             
     upload_to_s3(csv_buffer.getvalue())
 
