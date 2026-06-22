@@ -1,3 +1,9 @@
+'''
+{
+"dag_id" : "your_dag_id"
+}
+'''
+
 import csv
 import io
 import boto3
@@ -9,6 +15,7 @@ from airflow.models import TaskInstance, DagBag
 from airflow.utils.session import create_session
 from airflow.utils.state import State
 from airflow.utils import timezone
+from airflow.models.param import Param
 #from collections import defaultdict
 
 LOOKBACK_DAYS = 7
@@ -42,7 +49,7 @@ def get_task_runtime(dag_id, task_id):
             if ti.duration is not None:
 
                 runtimes.append(
-                    ti.duration / 60
+                    ti.duration / 3600
                 )
                 
         print(
@@ -80,6 +87,8 @@ def upload_to_s3(csv_content):
     print(
         f"CSV uploaded to s3://{S3_BUCKET}/{s3_key}"
     )
+
+    
     
 def get_running_tasks(dag_id):
 
@@ -139,21 +148,48 @@ def get_critical_path_runtime(
 
 
 def analyze_dag(**context):
-
+'''
     dag_run = context.get("dag_run")
     dag_id = dag_run.conf.get("dag_id")
 
     if not dag_id:
         raise ValueError("dag_id is mandatory")
+'''
 
-    dag = DagBag().get_dag(dag_id)
-
-    if not dag:
-        raise ValueError(f"DAG {dag_id} not found")
-
-    print("=" * 100)
-    print(f"DAG ANALYSIS : {dag_id}")
-    print("=" * 100)
+    dag_ids_string = (
+        context["params"]
+        .get("dag_ids")
+    )
+    dag_ids = [
+        x.strip()
+        for x in dag_ids_string.split(",")
+        if x.strip()
+    ]
+    
+    if not dag_ids:
+        raise ValueError("Please provide DAG IDs")
+    
+    for dag_id in dag_ids:
+        dag = DagBag().get_dag(dag_id)
+        if not dag:
+            print(f"DAG {dag_id} not found")
+            continue
+        
+        root_tasks = []
+        end_tasks = []
+        total_runtime = 0
+        runtime_map = {}
+        print("=" * 120)
+        print(f"DAG ANALYSIS : {dag_id}")
+        print("=" * 120)
+        
+        print(
+            f"{'DAG_ID':<25}"
+            f"{'TASK_ID':<50}"
+            f"{'MEDIAN_RUNTIME_HOURS':<20}"
+            
+        )
+        
 
     csv_buffer = io.StringIO()
 
@@ -165,8 +201,7 @@ def analyze_dag(**context):
     ])
 
     root_tasks = []
-    end_tasks = []
-    total_runtime = 0
+    total_runtime_minutes = 0
     runtime_map = {}
 
     for task in dag.tasks:
@@ -177,7 +212,7 @@ def analyze_dag(**context):
         )
 
         runtime_map[task.task_id] = runtime
-        total_runtime += runtime
+        total_runtime_minutes += runtime
 
         upstream = list(task.upstream_task_ids)
         downstream = list(task.downstream_task_ids)
@@ -185,14 +220,7 @@ def analyze_dag(**context):
         if not upstream:
             root_tasks.append(task.task_id)
 
-        if not downstream:
-            end_tasks.append(task.task_id)
-
         print("-" * 80)
-        print(f"TASK ID : {task.task_id}")
-        print(f"UPSTREAM : {upstream}")
-        print(f"DOWNSTREAM : {downstream}")
-        print(f"MEDIAN_RUNTIME_HOURS : {runtime}")
 
         writer.writerow([
             dag_id,
@@ -212,9 +240,9 @@ def analyze_dag(**context):
         if not rt.start_date:
             continue
 
-        elapsed_hours = (
+        elapsed_minutes = (
             timezone.utcnow() - rt.start_date
-        ).total_seconds() / 60
+        ).total_seconds() / 3600
 
         avg_runtime_minutes = runtime_map.get(
             rt.task_id,
@@ -222,7 +250,7 @@ def analyze_dag(**context):
         )
 
         remaining_minutes = max(
-            avg_runtime_minutes - elapsed_hours,
+            avg_runtime_minutes - elapsed_minutes,
             0
         )
 
@@ -232,7 +260,7 @@ def analyze_dag(**context):
         )
 
         print(f"TASK={rt.task_id}")
-        print(f"ELAPSED_MINUTES={round(elapsed_hours, 2)}")
+        print(f"ELAPSED_MINUTES={round(elapsed_minutes, 2)}")
         print(f"AVG_RUNTIME_MINUTES={avg_runtime_minutes}")
         print(f"REMAINING_MINUTES={round(remaining_minutes, 2)}")
         print(f"ESTIMATED_END={estimated_end}")
@@ -281,15 +309,32 @@ def analyze_dag(**context):
 
     print("=" * 100)
 
-    print(f"ROOT TASKS : {root_tasks}")
-    print(f"END TASKS : {end_tasks}")
 
     print(
-        f"ESTIMATED_FULL_DAG_RUNTIME_HOURS : "
-        f"{round(total_runtime, 2)}"
+        f"ESTIMATED_FULL_DAG_RUNTIME_MINUTES : "
+        f"{round(total_runtime_minutes, 2)}"
     )
 
-
+    
+    writer.writerow([])
+    
+    writer.writerow(["SUMMARY"])
+    
+    writer.writerow([
+        "TOTAL_TASKS",
+        len(dag.tasks)
+    ])
+    
+    writer.writerow([
+        "ESTIMATED_FULL_DAG_RUNTIME_HOURS",
+        round(total_runtime_minutes, 2)
+    ])
+    
+    writer.writerow([
+        "FINAL_DAG_ETA",
+        final_eta.strftime("%Y-%m-%d %H:%M:%S")
+    ])
+    
     print("=" * 100)
 
     upload_to_s3(
@@ -298,14 +343,24 @@ def analyze_dag(**context):
 
 
 with DAG(
-    dag_id="dre_dag_dependency_analysis",
+    dag_id="dag_completion_time",
     start_date=datetime(2025, 1, 1),
     schedule=None,
     catchup=False,
-    tags=["analysis", "eta"]
+    tags=["analysis", "eta"],
+    params={
+        "dag_ids": Param(
+            "",
+            type="string",
+            title=" DAG IDs",
+            description=(
+                "Comma separated DAG IDs"
+            )
+        )
+    }
 ) as dag:
 
     analyze_task = PythonOperator(
-        task_id="analyze_dag",
+        task_id="calculate_completion_time",
         python_callable=analyze_dag
     )
