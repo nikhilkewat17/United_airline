@@ -1,20 +1,20 @@
-ip-10-34-216-9.us-east-2.compute.internal
-*** Reading remote log from Cloudwatch log_group: airflow-dre-stg-Primary-MWAAEnvironment-2-Task log_stream: dag_id=dag_completion_time/run_id=manual__2026-06-22T09_16_34+00_00/task_id=calculate_completion_time/attempt=1.log.
-[2026-06-22, 09:16:54 UTC] {{taskinstance.py:1103}} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: dag_completion_time.calculate_completion_time manual__2026-06-22T09:16:34+00:00 [queued]>
-[2026-06-22, 09:16:54 UTC] {{taskinstance.py:1103}} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: dag_completion_time.calculate_completion_time manual__2026-06-22T09:16:34+00:00 [queued]>
-[2026-06-22, 09:16:54 UTC] {{taskinstance.py:1308}} INFO - Starting attempt 1 of 1
-[2026-06-22, 09:16:54 UTC] {{taskinstance.py:1327}} INFO - Executing <Task(PythonOperator): calculate_completion_time> on 2026-06-22 09:16:34+00:00
-[2026-06-22, 09:16:54 UTC] {{standard_task_runner.py:57}} INFO - Started process 1387354 to run task
-[2026-06-22, 09:16:54 UTC] {{standard_task_runner.py:84}} INFO - Running: ['airflow', 'tasks', 'run', 'dag_completion_time', 'calculate_completion_time', 'manual__2026-06-22T09:16:34+00:00', '--job-id', '164921882', '--raw', '--subdir', 'DAGS_FOLDER/dag_completion_time.py', '--cfg-path', '/tmp/tmpriuags4y']
-[2026-06-22, 09:16:54 UTC] {{standard_task_runner.py:85}} INFO - Job 164921882: Subtask calculate_completion_time
-[2026-06-22, 09:16:54 UTC] {{taskinstance.py:1545}} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='dag_completion_time' AIRFLOW_CTX_TASK_ID='calculate_completion_time' AIRFLOW_CTX_EXECUTION_DATE='2026-06-22T09:16:34+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-06-22T09:16:34+00:00'
-[2026-06-22, 09:16:54 UTC] {{logging_mixin.py:150}} WARNING - /usr/local/airflow/.local/lib/python3.10/site-packages/airflow/models/baseoperator.py:429 RemovedInAirflow3Warning: provide_context is deprecated as of 2.0 and is no longer required
-[2026-06-22, 09:16:57 UTC] {{dagbag.py:509}} ERROR - Exception bagging dag: dre_PQGEMD08
+ip-10-34-217-19.us-east-2.compute.internal
+*** Reading remote log from Cloudwatch log_group: airflow-dre-stg-Primary-MWAAEnvironment-2-Task log_stream: dag_id=dag_completion_time/run_id=manual__2026-06-22T11_04_39+00_00/task_id=calculate_completion_time/attempt=1.log.
+[2026-06-22, 11:04:53 UTC] {{taskinstance.py:1103}} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: dag_completion_time.calculate_completion_time manual__2026-06-22T11:04:39+00:00 [queued]>
+[2026-06-22, 11:04:53 UTC] {{taskinstance.py:1103}} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: dag_completion_time.calculate_completion_time manual__2026-06-22T11:04:39+00:00 [queued]>
+[2026-06-22, 11:04:53 UTC] {{taskinstance.py:1308}} INFO - Starting attempt 1 of 1
+[2026-06-22, 11:04:53 UTC] {{taskinstance.py:1327}} INFO - Executing <Task(PythonOperator): calculate_completion_time> on 2026-06-22 11:04:39+00:00
+[2026-06-22, 11:04:53 UTC] {{standard_task_runner.py:57}} INFO - Started process 1329840 to run task
+[2026-06-22, 11:04:53 UTC] {{standard_task_runner.py:84}} INFO - Running: ['airflow', 'tasks', 'run', 'dag_completion_time', 'calculate_completion_time', 'manual__2026-06-22T11:04:39+00:00', '--job-id', '164956490', '--raw', '--subdir', 'DAGS_FOLDER/dag_completion_time.py', '--cfg-path', '/tmp/tmpzgy4e19_']
+[2026-06-22, 11:04:53 UTC] {{standard_task_runner.py:85}} INFO - Job 164956490: Subtask calculate_completion_time
+[2026-06-22, 11:04:54 UTC] {{taskinstance.py:1545}} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='dag_completion_time' AIRFLOW_CTX_TASK_ID='calculate_completion_time' AIRFLOW_CTX_EXECUTION_DATE='2026-06-22T11:04:39+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-06-22T11:04:39+00:00'
+[2026-06-22, 11:04:54 UTC] {{logging_mixin.py:150}} WARNING - /usr/local/airflow/.local/lib/python3.10/site-packages/airflow/models/baseoperator.py:429 RemovedInAirflow3Warning: provide_context is deprecated as of 2.0 and is no longer required
+[2026-06-22, 11:04:57 UTC] {{dagbag.py:509}} ERROR - Exception bagging dag: dre_PQGEMD08
 Traceback (most recent call last):
   File "/usr/local/airflow/.local/lib/python3.10/site-packages/airflow/models/dagbag.py", line 500, in _bag_dag
     raise AirflowDagDuplicatedIdException(
 airflow.exceptions.AirflowDagDuplicatedIdException: Ignoring DAG dre_PQGEMD08 from /usr/local/airflow/dags/dre_PQGEMD08_bkp_sep1.py - also found in /usr/local/airflow/dags/dre_PQGEMD08.py
-[2026-06-22, 09:16:57 UTC] {{dagbag.py:447}} ERROR - Failed to bag_dag: /usr/local/airflow/dags/dre_PQGEMD08_bkp_sep1.py
+[2026-06-22, 11:04:57 UTC] {{dagbag.py:447}} ERROR - Failed to bag_dag: /usr/local/airflow/dags/dre_PQGEMD08_bkp_sep1.py
 Traceback (most recent call last):
   File "/usr/local/airflow/.local/lib/python3.10/site-packages/airflow/models/dagbag.py", line 445, in _process_modules
     self.bag_dag(dag=dag, root_dag=dag)
@@ -23,14 +23,12 @@ Traceback (most recent call last):
   File "/usr/local/airflow/.local/lib/python3.10/site-packages/airflow/models/dagbag.py", line 500, in _bag_dag
     raise AirflowDagDuplicatedIdException(
 airflow.exceptions.AirflowDagDuplicatedIdException: Ignoring DAG dre_PQGEMD08 from /usr/local/airflow/dags/dre_PQGEMD08_bkp_sep1.py - also found in /usr/local/airflow/dags/dre_PQGEMD08.py
-[2026-06-22, 09:17:07 UTC] {{dre_MWAA_DB_Cleanup.py:170}} ERROR - type object 'TaskFail' has no attribute 'execution_date'
-[2026-06-22, 09:17:07 UTC] {{logging_mixin.py:150}} WARNING - /usr/local/airflow/.local/lib/python3.10/site-packages/airflow/models/param.py:73 RemovedInAirflow3Warning: The use of non-json-serializable params is deprecated and will be removed in a future release
-[2026-06-22, 09:17:08 UTC] {{dagbag.py:509}} ERROR - Exception bagging dag: dre_PQGEMB44
+[2026-06-22, 11:05:03 UTC] {{dagbag.py:509}} ERROR - Exception bagging dag: dre_PQGEMB44
 Traceback (most recent call last):
   File "/usr/local/airflow/.local/lib/python3.10/site-packages/airflow/models/dagbag.py", line 500, in _bag_dag
     raise AirflowDagDuplicatedIdException(
 airflow.exceptions.AirflowDagDuplicatedIdException: Ignoring DAG dre_PQGEMB44 from /usr/local/airflow/dags/dre_PQGEMB44_aug23.py - also found in /usr/local/airflow/dags/dre_PQGEMB44.py
-[2026-06-22, 09:17:08 UTC] {{dagbag.py:447}} ERROR - Failed to bag_dag: /usr/local/airflow/dags/dre_PQGEMB44_aug23.py
+[2026-06-22, 11:05:03 UTC] {{dagbag.py:447}} ERROR - Failed to bag_dag: /usr/local/airflow/dags/dre_PQGEMB44_aug23.py
 Traceback (most recent call last):
   File "/usr/local/airflow/.local/lib/python3.10/site-packages/airflow/models/dagbag.py", line 445, in _process_modules
     self.bag_dag(dag=dag, root_dag=dag)
@@ -39,12 +37,14 @@ Traceback (most recent call last):
   File "/usr/local/airflow/.local/lib/python3.10/site-packages/airflow/models/dagbag.py", line 500, in _bag_dag
     raise AirflowDagDuplicatedIdException(
 airflow.exceptions.AirflowDagDuplicatedIdException: Ignoring DAG dre_PQGEMB44 from /usr/local/airflow/dags/dre_PQGEMB44_aug23.py - also found in /usr/local/airflow/dags/dre_PQGEMB44.py
-[2026-06-22, 09:17:08 UTC] {{dagbag.py:509}} ERROR - Exception bagging dag: dre_CycleTimeEstimator
+[2026-06-22, 11:05:05 UTC] {{dre_MWAA_DB_Cleanup.py:170}} ERROR - type object 'TaskFail' has no attribute 'execution_date'
+[2026-06-22, 11:05:05 UTC] {{logging_mixin.py:150}} WARNING - /usr/local/airflow/.local/lib/python3.10/site-packages/airflow/models/param.py:73 RemovedInAirflow3Warning: The use of non-json-serializable params is deprecated and will be removed in a future release
+[2026-06-22, 11:05:07 UTC] {{dagbag.py:509}} ERROR - Exception bagging dag: dre_CycleTimeEstimator
 Traceback (most recent call last):
   File "/usr/local/airflow/.local/lib/python3.10/site-packages/airflow/models/dagbag.py", line 500, in _bag_dag
     raise AirflowDagDuplicatedIdException(
-airflow.exceptions.AirflowDagDuplicatedIdException: Ignoring DAG dre_CycleTimeEstimator from /usr/local/airflow/dags/dre_CyckeTimeEstimator.py - also found in /usr/local/airflow/dags/temp_k.py
-[2026-06-22, 09:17:08 UTC] {{dagbag.py:447}} ERROR - Failed to bag_dag: /usr/local/airflow/dags/dre_CyckeTimeEstimator.py
+airflow.exceptions.AirflowDagDuplicatedIdException: Ignoring DAG dre_CycleTimeEstimator from /usr/local/airflow/dags/temp_k.py - also found in /usr/local/airflow/dags/dre_CyckeTimeEstimator.py
+[2026-06-22, 11:05:07 UTC] {{dagbag.py:447}} ERROR - Failed to bag_dag: /usr/local/airflow/dags/temp_k.py
 Traceback (most recent call last):
   File "/usr/local/airflow/.local/lib/python3.10/site-packages/airflow/models/dagbag.py", line 445, in _process_modules
     self.bag_dag(dag=dag, root_dag=dag)
@@ -52,157 +52,4 @@ Traceback (most recent call last):
     self._bag_dag(dag=dag, root_dag=root_dag, recursive=True)
   File "/usr/local/airflow/.local/lib/python3.10/site-packages/airflow/models/dagbag.py", line 500, in _bag_dag
     raise AirflowDagDuplicatedIdException(
-airflow.exceptions.AirflowDagDuplicatedIdException: Ignoring DAG dre_CycleTimeEstimator from /usr/local/airflow/dags/dre_CyckeTimeEstimator.py - also found in /usr/local/airflow/dags/temp_k.py
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - ========================================================================================================================
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - DAG ANALYSIS : dre_CP
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - ========================================================================================================================
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - DAG_ID                   TASK_ID                                           MEDIAN_RUNTIME_HOURS
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - ------------------------------------------------------------------------------------------------------------------------
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=CP_TIME_SENSOR | RUN_COUNT=7 | RUNTIMES=[9.827055555555554e-05, 0.0001334086111111111, 8.309666666666667e-05, 9.089416666666666e-05, 8.753027777777777e-05, 8.966138888888889e-05, 0.00010633333333333332]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   CP_TIME_SENSOR                                    0.0                 
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=ets_PQGEMI27 | RUN_COUNT=7 | RUNTIMES=[0.0001344036111111111, 0.00015694777777777776, 0.00010813055555555556, 9.927361111111112e-05, 9.0115e-05, 0.00011063027777777778, 0.00022559333333333333]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   ets_PQGEMI27                                      0.0                 
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=ets_PQGEMD08 | RUN_COUNT=7 | RUNTIMES=[0.00012266416666666666, 0.00013739583333333334, 0.00010505388888888888, 0.00010108333333333333, 0.00030682999999999996, 9.337416666666666e-05, 0.00010284388888888889]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   ets_PQGEMD08                                      0.0                 
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=S3_Sensor_ADJ_ELASTICITY | RUN_COUNT=7 | RUNTIMES=[0.00027425694444444443, 0.0002957213888888889, 0.0002706311111111111, 0.00027018777777777775, 0.00024749916666666667, 0.00024025694444444447, 0.0002640125]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   S3_Sensor_ADJ_ELASTICITY                          0.0                 
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI72_clean_start | RUN_COUNT=7 | RUNTIMES=[0.004383680555555556, 0.0024488788888888885, 0.003939746388888889, 0.016562706111111113, 0.003107823611111111, 0.08075860833333334, 0.06725527166666667]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI72_clean_start                              0.0                 
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI72 | RUN_COUNT=7 | RUNTIMES=[0.06373501027777778, 0.06550267916666666, 0.14732767305555555, 0.08430757194444444, 0.07334328166666668, 0.10324612472222224, 0.11636342416666666]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI72                                          0.08                
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI72_clean_end | RUN_COUNT=7 | RUNTIMES=[0.02234866138888889, 0.016229867222222222, 0.0097071375, 0.0172731675, 0.012093853333333333, 0.010797738055555554, 0.009039618055555556]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI72_clean_end                                0.01                
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI72_Success | RUN_COUNT=7 | RUNTIMES=[0.00018189944444444445, 0.0001832738888888889, 0.00017436333333333334, 0.0001889611111111111, 0.00017375722222222223, 0.0001733597222222222, 0.0002053375]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI72_Success                                  0.0                 
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=ets_PQGEMD48 | RUN_COUNT=7 | RUNTIMES=[9.54286111111111e-05, 0.00011944777777777778, 0.0001008175, 0.00010990305555555555, 0.00015361944444444446, 9.711416666666667e-05, 0.0002002386111111111]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   ets_PQGEMD48                                      0.0                 
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=ets_PQGEMI71 | RUN_COUNT=7 | RUNTIMES=[0.00010883972222222222, 0.00011675583333333333, 9.367222222222223e-05, 0.00017351555555555556, 8.7315e-05, 0.00010218500000000001, 9.72861111111111e-05]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   ets_PQGEMI71                                      0.0                 
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=ets_PQGEMD47_PAX | RUN_COUNT=7 | RUNTIMES=[0.00010348305555555556, 0.00013137111111111112, 9.277249999999999e-05, 0.00012233972222222222, 9.142666666666666e-05, 9.627e-05, 0.00010083638888888889]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   ets_PQGEMD47_PAX                                  0.0                 
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=S3_Sensor_PROD_CPF_PQGEMA12_dom | RUN_COUNT=7 | RUNTIMES=[0.0003671105555555556, 0.00019160055555555555, 0.00017949611111111113, 0.00016775055555555556, 0.00016756083333333333, 0.00017701499999999998, 0.00016584]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   S3_Sensor_PROD_CPF_PQGEMA12_dom                   0.0                 
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=S3_Sensor_PROD_TVF_PQGEMA12_dom | RUN_COUNT=7 | RUNTIMES=[0.00020610444444444444, 0.00017984055555555554, 0.0001606613888888889, 0.0001831313888888889, 0.00018170916666666666, 0.00016914222222222223, 0.00016557416666666667]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   S3_Sensor_PROD_TVF_PQGEMA12_dom                   0.0                 
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=S3_Sensor_PROD_CPF_PQGEMA12_intl | RUN_COUNT=7 | RUNTIMES=[0.0001545411111111111, 0.0001747961111111111, 0.0001795297222222222, 0.0001942161111111111, 0.00017249611111111113, 0.00017048861111111112, 0.0003099136111111111]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   S3_Sensor_PROD_CPF_PQGEMA12_intl                  0.0                 
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=S3_Sensor_PROD_TVF_PQGEMA12_intl | RUN_COUNT=7 | RUNTIMES=[0.0002414952777777778, 0.0001955863888888889, 0.0001833538888888889, 0.0001826163888888889, 0.00016861305555555554, 0.00017667694444444443, 0.0003031208333333333]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   S3_Sensor_PROD_TVF_PQGEMA12_intl                  0.0                 
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=ets_PQGEMR40 | RUN_COUNT=7 | RUNTIMES=[0.0004841813888888889, 0.00012994277777777778, 8.582666666666666e-05, 9.506861111111112e-05, 9.11888888888889e-05, 0.00010381833333333334, 9.485527777777778e-05]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   ets_PQGEMR40                                      0.0                 
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI73_clean_start | RUN_COUNT=7 | RUNTIMES=[0.0032313197222222224, 0.005395132222222222, 0.004418730833333334, 0.03673558861111111, 0.0050028852777777785, 0.04901309194444445, 0.0044302383333333336]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI73_clean_start                              0.01                
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI73 | RUN_COUNT=7 | RUNTIMES=[0.9100335583333333, 0.6688258052777778, 0.5928584297222222, 0.5912093752777778, 0.7515545297222221, 0.6062792208333334, 0.7936232897222222]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI73                                          0.67                
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI73_cp2s3 | RUN_COUNT=7 | RUNTIMES=[0.5079172916666667, 0.44516885666666667, 0.5034655622222223, 0.4779067819444444, 0.5400866997222222, 0.47146956944444446, 0.5128612033333333]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI73_cp2s3                                    0.5                 
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI73_clean_end | RUN_COUNT=7 | RUNTIMES=[0.004779884999999999, 0.005784766111111111, 0.005072951111111111, 0.005927248333333334, 0.005719165, 0.0056719100000000005, 0.004364331388888889]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI73_clean_end                                0.01                
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI73_Success | RUN_COUNT=7 | RUNTIMES=[0.00018047861111111113, 0.0001907302777777778, 0.0001704025, 0.00015540750000000002, 0.00015319055555555557, 0.00017405833333333334, 0.00016658472222222224]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI73_Success                                  0.0                 
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI74_clean_start | RUN_COUNT=7 | RUNTIMES=[0.076155795, 0.0051123777777777775, 0.0030524616666666666, 0.0034294566666666663, 0.005794519166666666, 0.005502686666666666, 0.02674697972222222]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI74_clean_start                              0.01                
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI74 | RUN_COUNT=7 | RUNTIMES=[0.2718333697222222, 0.18971517777777777, 0.19070180388888888, 0.17349703666666666, 0.28518453833333335, 0.20386688694444444, 0.27485075555555555]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI74                                          0.2                 
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI74_cp2s3 | RUN_COUNT=7 | RUNTIMES=[0.46643219999999996, 0.25848998166666665, 0.18062875444444443, 0.10752039027777777, 0.13702718027777777, 0.14113136138888888, 0.07780783027777777]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI74_cp2s3                                    0.14                
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI74_clean_end | RUN_COUNT=7 | RUNTIMES=[0.005210551388888889, 0.041966568333333336, 0.08365998944444446, 0.007360672777777778, 0.017782421111111113, 0.004952466388888889, 0.005653861111111111]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI74_clean_end                                0.01                
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI74_Success | RUN_COUNT=7 | RUNTIMES=[0.0002733883333333333, 0.00018057638888888887, 0.00017444305555555555, 0.0008425291666666666, 0.00016131611111111111, 0.0001626075, 0.00015708444444444445]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI74_Success                                  0.0                 
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI75_clean_start | RUN_COUNT=7 | RUNTIMES=[0.08116390083333333, 0.007341933888888889, 0.005550017777777777, 0.0070353272222222225, 0.004780425277777777, 0.0041984188888888885, 0.02488229138888889]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI75_clean_start                              0.01                
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI75 | RUN_COUNT=7 | RUNTIMES=[0.7524812044444444, 0.7255775466666667, 0.7443842427777777, 0.6351526483333334, 0.8271331125, 0.7794537108333334, 0.7689459030555555]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI75                                          0.75                
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI75_cp2s3 | RUN_COUNT=7 | RUNTIMES=[0.5242461680555556, 0.3421734805555556, 0.3228482752777778, 0.21867409916666666, 0.3214995127777778, 0.25661262833333337, 0.21718154444444446]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI75_cp2s3                                    0.32                
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI75_clean_end | RUN_COUNT=7 | RUNTIMES=[0.006771094722222222, 0.004270163055555555, 0.0455049875, 0.0026393602777777777, 0.004979256111111111, 0.0069745525, 0.004387154722222222]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI75_clean_end                                0.0                 
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI75_Success | RUN_COUNT=7 | RUNTIMES=[0.00018142055555555556, 0.00018814972222222222, 0.00016461277777777777, 0.00016345277777777778, 0.0001979952777777778, 0.00017989083333333334, 0.0001753077777777778]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI75_Success                                  0.0                 
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI76_clean_start | RUN_COUNT=7 | RUNTIMES=[0.09140216444444445, 0.004187604166666667, 0.004725623611111111, 0.0035611405555555555, 0.0045361655555555555, 0.004112003611111111, 0.004773240555555555]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI76_clean_start                              0.0                 
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI76 | RUN_COUNT=7 | RUNTIMES=[1.8486509297222222, 1.6861532505555556, 1.5475654530555554, 1.4943979725, 1.7474424480555555, 1.774018036111111, 1.5680917397222223]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI76                                          1.69                
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI76_cp2s3 | RUN_COUNT=7 | RUNTIMES=[0.7777437191666667, 0.686563805, 0.5930640974999999, 0.48178677472222226, 0.6171888580555555, 0.48802967416666665, 0.4910833061111111]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI76_cp2s3                                    0.59                
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI76_clean_end | RUN_COUNT=7 | RUNTIMES=[0.005715152777777777, 0.004643008611111111, 0.003979271666666667, 0.024749369166666667, 0.013147723611111111, 0.007105219444444445, 0.004720158888888889]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI76_clean_end                                0.01                
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI76_Success | RUN_COUNT=7 | RUNTIMES=[0.00018290888888888886, 0.00019679333333333333, 0.0001759636111111111, 0.00018174472222222223, 0.0001538336111111111, 0.00018528027777777776, 0.00016447416666666667]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI76_Success                                  0.0                 
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - TASK=S3_Sensor_ADJ_CLS_PART_RECAP_RATE | RUN_COUNT=7 | RUNTIMES=[0.00025661194444444443, 0.0002677938888888889, 0.0002542913888888889, 0.00024018416666666666, 0.0002544863888888889, 0.00024662055555555557, 0.0002579125]
-[2026-06-22, 09:17:09 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   S3_Sensor_ADJ_CLS_PART_RECAP_RATE                 0.0                 
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI77_DOM_clean_start | RUN_COUNT=7 | RUNTIMES=[0.004278746666666666, 0.0043804402777777775, 0.005114963611111111, 0.005641766388888888, 0.005593360833333334, 0.005905270277777778, 0.005802651666666666]
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI77_DOM_clean_start                          0.01                
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI77_DOM | RUN_COUNT=7 | RUNTIMES=[1.1596916822222223, 1.0828492725, 1.0921523713888888, 1.1099826491666667, 1.1560546394444444, 1.2337023375, 1.1433750558333335]
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI77_DOM                                      1.14                
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI77_DOM_cp2s3 | RUN_COUNT=7 | RUNTIMES=[0.4144402019444445, 0.3582819913888889, 0.42225653444444444, 0.40316483777777773, 0.3717135627777778, 0.4021820791666667, 0.4311814152777778]
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI77_DOM_cp2s3                                0.4                 
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI77_DOM_clean_end | RUN_COUNT=7 | RUNTIMES=[0.016010225833333332, 0.006480119166666667, 0.08538756138888888, 0.005514731944444444, 0.08070304111111112, 0.006510355555555556, 0.0035632877777777776]
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI77_DOM_clean_end                            0.01                
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI77_DOM_Success | RUN_COUNT=7 | RUNTIMES=[0.0001946327777777778, 0.00018148833333333334, 0.00021311055555555558, 0.00016567416666666667, 0.00016170166666666668, 0.00016903916666666667, 0.00016652805555555553]
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI77_DOM_Success                              0.0                 
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI77_INT_clean_start | RUN_COUNT=7 | RUNTIMES=[0.017126718333333332, 0.005831666111111112, 0.004353034166666667, 0.004241831111111111, 0.0060458275, 0.004373890555555556, 0.0039044]
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI77_INT_clean_start                          0.0                 
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI77_INT | RUN_COUNT=7 | RUNTIMES=[1.0322002075, 1.282912705, 0.9377455019444445, 0.9739432719444445, 1.0706742877777777, 0.9668723886111111, 0.9666338844444444]
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI77_INT                                      0.97                
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI77_INT_cp2s3 | RUN_COUNT=7 | RUNTIMES=[0.38989482694444444, 0.3295912055555556, 0.28986372388888887, 0.36549140416666664, 0.35299023333333335, 0.39680940277777776, 0.39078211166666665]
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI77_INT_cp2s3                                0.37                
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI77_INT_clean_end | RUN_COUNT=7 | RUNTIMES=[0.04648182583333334, 0.006343638888888889, 0.018734311666666666, 0.004291952777777778, 0.11339640166666666, 0.003789498055555556, 0.039272445277777776]
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI77_INT_clean_end                            0.02                
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI77_INT_Success | RUN_COUNT=7 | RUNTIMES=[0.00019612444444444446, 0.00019825166666666665, 0.0002431022222222222, 0.00015259277777777776, 0.00018131055555555556, 0.00017197, 0.00016647083333333335]
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI77_INT_Success                              0.0                 
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - TASK=S3_Sensor_RCFDemandAdjustExclusion | RUN_COUNT=7 | RUNTIMES=[0.0002830558333333333, 0.0002700436111111111, 0.00026675694444444446, 0.0002413475, 0.00025884777777777777, 0.0002741847222222222, 0.0002754761111111111]
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   S3_Sensor_RCFDemandAdjustExclusion                0.0                 
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI78_clean_start | RUN_COUNT=7 | RUNTIMES=[0.1045660088888889, 0.042980208611111105, 0.10906652, 0.004099597500000001, 0.003798963055555555, 0.041892329444444446, 0.0034579066666666665]
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI78_clean_start                              0.04                
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI78 | RUN_COUNT=7 | RUNTIMES=[0.8628579522222222, 0.7827884822222222, 0.7215427430555555, 0.7102240541666667, 0.7815319344444445, 0.7982106188888889, 0.7968908025]
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI78                                          0.78                
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI78_cp2s3 | RUN_COUNT=7 | RUNTIMES=[0.6942484624999999, 0.7703051219444444, 0.8062956577777778, 0.7004456994444445, 0.9475345872222223, 0.8008080616666666, 0.7646878730555555]
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI78_cp2s3                                    0.77                
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI78_clean_end | RUN_COUNT=7 | RUNTIMES=[0.004545811388888888, 0.05976718472222222, 0.052623716111111114, 0.009587339166666667, 0.08037292416666666, 0.037123008888888885, 0.09981467194444443]
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI78_clean_end                                0.05                
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI78_Success | RUN_COUNT=7 | RUNTIMES=[0.00022372222222222222, 0.0001944186111111111, 0.00019223805555555556, 0.00018501027777777777, 0.0001658552777777778, 0.00019458083333333333, 0.00015856388888888887]
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI78_Success                                  0.0                 
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI10_clean_start | RUN_COUNT=7 | RUNTIMES=[0.08416438, 0.006889186388888889, 0.010580110833333335, 0.006743074722222222, 0.0724351925, 0.004449811944444444, 0.009761007777777778]
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI10_clean_start                              0.01                
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI10 | RUN_COUNT=7 | RUNTIMES=[0.11127574805555555, 0.09678469888888888, 0.09736504972222222, 0.1479176447222222, 0.05848669, 0.17173248000000002, 0.17450292944444445]
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI10                                          0.11                
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI10_clean_end | RUN_COUNT=7 | RUNTIMES=[0.04830335333333334, 0.005703930277777778, 0.0061172175, 0.049567908333333334, 0.10821872694444445, 0.006430425277777777, 0.006067642222222222]
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI10_clean_end                                0.01                
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMI10_Success | RUN_COUNT=7 | RUNTIMES=[0.0007244055555555556, 0.0001827411111111111, 0.0007975413888888889, 0.00017613694444444444, 0.0002117586111111111, 0.00016970638888888888, 0.00017880750000000002]
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMI10_Success                                  0.0                 
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - TASK=ets_PQGEMD55 | RUN_COUNT=7 | RUNTIMES=[0.00015752222222222223, 0.0001119275, 0.0001004025, 9.726138888888888e-05, 9.595527777777777e-05, 0.00010146611111111111, 8.48725e-05]
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   ets_PQGEMD55                                      0.0                 
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - TASK=ets_PQGEMK74 | RUN_COUNT=7 | RUNTIMES=[0.00012342916666666667, 0.0001257, 0.00011115666666666667, 9.794666666666665e-05, 0.00012318194444444443, 9.847916666666666e-05, 0.00023225555555555556]
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   ets_PQGEMK74                                      0.0                 
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMK38_clean_start | RUN_COUNT=7 | RUNTIMES=[0.004374341111111111, 0.0038930905555555556, 0.0041410038888888894, 0.005432813333333333, 0.0043989225, 0.0054059952777777785, 0.004118871388888889]
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMK38_clean_start                              0.0                 
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMK38 | RUN_COUNT=7 | RUNTIMES=[0.0756787625, 0.06855946722222223, 0.07404026416666667, 0.0759543611111111, 0.07428678861111111, 0.19806274999999998, 0.175745065]
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMK38                                          0.08                
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMK38_clean_end | RUN_COUNT=7 | RUNTIMES=[0.004909611666666667, 0.0043492397222222225, 0.12095647861111111, 0.008965415000000001, 0.003950585, 0.004908895, 0.004600638611111111]
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMK38_clean_end                                0.0                 
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - TASK=PQGEMK38_Success | RUN_COUNT=7 | RUNTIMES=[0.00022514027777777778, 0.00019149916666666666, 0.00017105361111111113, 0.00016816555555555557, 0.00017289777777777777, 0.00016485666666666668, 0.00017618277777777777]
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   PQGEMK38_Success                                  0.0                 
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - TASK=CP_Success | RUN_COUNT=7 | RUNTIMES=[8.377611111111111e-05, 0.00010737361111111111, 8.830305555555556e-05, 8.1395e-05, 7.712583333333333e-05, 9.040138888888888e-05, 9.387083333333334e-05]
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   CP_Success                                        0.0                 
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - TASK=CP_SLA_TIME | RUN_COUNT=7 | RUNTIMES=[0.00037385583333333336, 0.0005356563888888889, 0.0001146386111111111, 0.0001197275, 0.0001245377777777778, 0.0006684947222222223, 0.00015489499999999997]
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   CP_SLA_TIME                                       0.0                 
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - TASK=SLADummy | RUN_COUNT=7 | RUNTIMES=[7.94911111111111e-05, 8.509222222222222e-05, 8.438888888888889e-05, 0.0001199125, 0.0001023838888888889, 9.082444444444443e-05, 7.545666666666667e-05]
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   SLADummy                                          0.0                 
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - TASK=SLATask | RUN_COUNT=7 | RUNTIMES=[0.0002190925, 7.482583333333333e-05, 7.955666666666666e-05, 7.680888888888889e-05, 7.65286111111111e-05, 8.551611111111112e-05, 8.430472222222222e-05]
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   SLATask                                           0.0                 
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - TASK=Downlines.Markers.etm_PQGEMD55 | RUN_COUNT=7 | RUNTIMES=[9.86236111111111e-05, 0.00010575194444444446, 9.826833333333334e-05, 7.678277777777778e-05, 7.895222222222222e-05, 7.827722222222221e-05, 9.177861111111111e-05]
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - dre_CP                   Downlines.Markers.etm_PQGEMD55                    0.0                 
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - ========================================================================================================================
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - RUNNING TASKS
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - ========================================================================================================================
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - ========================================================================================================================
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - CRITICAL_PATH_HOURS=5.25
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - ESTIMATED_FULL_DAG_RUNTIME_HOURS : 9.78
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - FINAL_DAG_ETA=2026-06-22 14:32:10.732331+00:00
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - ========================================================================================================================
-[2026-06-22, 09:17:10 UTC] {{logging_mixin.py:150}} INFO - CSV uploaded to s3://dre-rms-mwaa-rms-stg/dags2/reports/dependency_analysis_20260622_091710.csv
-[2026-06-22, 09:17:10 UTC] {{python.py:183}} INFO - Done. Returned value was: None
-[2026-06-22, 09:17:10 UTC] {{taskinstance.py:1345}} INFO - Marking task as SUCCESS. dag_id=dag_completion_time, task_id=calculate_completion_time, execution_date=20260622T091634, start_date=20260622T091654, end_date=20260622T091710
-[2026-06-22, 09:17:11 UTC] {{local_task_job_runner.py:225}} INFO - Task exited with return code 0
+airflow.exceptions.AirflowDagDuplicatedIdException: Ignoring DAG dre_CycleTimeEstimator from /usr/local/airflow/dags/temp_k.py - also found in /usr/local/airflow/dags/dre_CyckeTimeEstimator.py
